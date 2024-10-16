@@ -74,12 +74,6 @@ export default class AuthenticatingConcept {
     return { msg: "Successfully authenticated.", _id: user._id };
   }
 
-  async updateUsername(_id: ObjectId, username: string) {
-    await this.assertUsernameUnique(username);
-    await this.users.partialUpdateOne({ _id }, { username });
-    return { msg: "Username updated successfully!" };
-  }
-
   async updatePassword(_id: ObjectId, currentPassword: string, newPassword: string) {
     const user = await this.users.readOne({ _id });
     if (!user) {
@@ -88,7 +82,7 @@ export default class AuthenticatingConcept {
     if (user.password !== currentPassword) {
       throw new NotAllowedError("The given current password is wrong!");
     }
-
+    await this.assertGoodPassword(newPassword);
     await this.users.partialUpdateOne({ _id }, { password: newPassword });
     return { msg: "Password updated successfully!" };
   }
@@ -102,6 +96,12 @@ export default class AuthenticatingConcept {
     const maybeUser = await this.users.readOne({ _id });
     if (maybeUser === null) {
       throw new NotFoundError(`User not found!`);
+    }
+  }
+
+  private async assertGoodPassword(password: string) {
+    if (!password) {
+      throw new BadValuesError("Password must be non-empty!");
     }
   }
 
