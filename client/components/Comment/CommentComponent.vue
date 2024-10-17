@@ -3,34 +3,34 @@ import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { fetchy } from "../../utils/fetchy";
-import CommentListComponent from "../Comment/CommentListComponent.vue";
+import CommentListComponent from "./CommentListComponent.vue";
 
-const props = defineProps(["post"]);
-const emit = defineEmits(["refreshPosts"]);
+const props = defineProps(["comment"]);
+const emit = defineEmits(["refreshComments"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
-const deletePost = async () => {
+const deleteComment = async () => {
   try {
-    await fetchy(`/api/posts/${props.post._id}`, "DELETE");
+    await fetchy(`/api/comments/${props.comment._id}`, "DELETE");
   } catch {
     return;
   }
-  emit("refreshPosts");
+  emit("refreshComments");
 };
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
-  <p>{{ props.post.content }}</p>
+  <p class="author">{{ props.comment.author }}</p>
+  <p>{{ props.comment.content }}</p>
   <div class="base">
-    <menu v-if="props.post.author == currentUsername">
-      <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
+    <menu v-if="props.comment.author == currentUsername">
+      <li><button class="button-error btn-small pure-button" @click="deleteComment">Delete</button></li>
     </menu>
-    <article class="timestamp">Created on: {{ formatDate(props.post.dateCreated) }}</article>
+    <article class="timestamp">Created on: {{ formatDate(props.comment.dateCreated) }}</article>
   </div>
-  <h3>Comments:</h3>
+  <h3>Replies:</h3>
   <div class="comments">
-    <CommentListComponent :parent="props.post" />
+    <CommentListComponent :parent="props.comment" />
   </div>
 </template>
 
