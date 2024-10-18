@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import router from "@/router";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { fetchy } from "../../utils/fetchy";
-import CommentListComponent from "../Comment/CommentListComponent.vue";
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["refreshPosts"]);
@@ -17,20 +17,21 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+async function viewComments() {
+  void router.push({ name: "Comments", params: { id: props.post._id } });
+}
 </script>
 
 <template>
   <p class="author">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
   <div class="base">
-    <menu v-if="props.post.author == currentUsername">
-      <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
+    <menu>
+      <button class="btn-small pure-button" @click="viewComments">View Comments & Reply</button>
+      <button v-if="props.post.author == currentUsername" class="button-error btn-small pure-button" @click="deletePost">Delete</button>
     </menu>
     <article class="timestamp">Created on: {{ formatDate(props.post.dateCreated) }}</article>
-  </div>
-  <h3>Comments:</h3>
-  <div class="comments">
-    <CommentListComponent :parent="props.post" />
   </div>
 </template>
 
@@ -68,9 +69,5 @@ menu {
 
 .base article:only-child {
   margin-left: auto;
-}
-
-.comments {
-  margin-left: 2em;
 }
 </style>

@@ -28,7 +28,6 @@ const deleteComment = async () => {
     </menu>
     <article class="timestamp">Created on: {{ formatDate(props.comment.dateCreated) }}</article>
   </div>
-  <h3>Replies:</h3>
   <div class="comments">
     <CommentListComponent :parent="props.comment" />
   </div>

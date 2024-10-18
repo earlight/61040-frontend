@@ -31,8 +31,6 @@ onBeforeMount(async () => {
 
 <template>
   <section v-if="isLoggedIn">
-    <h4>Create a comment:</h4>
-    <!-- pass in props.parent._id to refreshComments -->
     <CreateCommentForm :parent="props.parent" @refreshComments="getCommentsByParent(props.parent._id)" />
   </section>
   <section class="comments" v-if="loaded && comments.length !== 0">
@@ -49,6 +47,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  padding-bottom: 1em;
 }
 
 section,

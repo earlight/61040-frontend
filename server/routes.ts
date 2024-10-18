@@ -135,6 +135,19 @@ class Routes {
   }
 
   /**
+   * Returns a post by object ID.
+   *
+   * @param id - The object ID of the post.
+   * @returns PostDoc - The post.
+   */
+  @Router.get("/posts/:id")
+  async getPost(id: string) {
+    const oid = new ObjectId(id);
+    await Posting.assertPostExists(oid);
+    return Responses.post(await Posting.getPost(oid));
+  }
+
+  /**
    * Creates a post, as well as a default initial score for the post.
    *
    * @param session - The session of the user creating the post.
