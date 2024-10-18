@@ -25,9 +25,9 @@ onBeforeMount(async () => {
   <header>
     <nav>
       <div class="title">
-        <img src="@/assets/images/logo.svg" />
+        <img src="@/assets/images/rely-logo.png" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
+          <h1>Rely</h1>
         </RouterLink>
       </div>
       <ul>
@@ -71,7 +71,7 @@ h1 {
 }
 
 img {
-  height: 2em;
+  height: 4em;
 }
 
 a {
