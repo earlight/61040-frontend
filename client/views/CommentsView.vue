@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, onUpdated, ref } from "vue";
+import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { useRoute } from "vue-router";
 import CommentListComponent from "../components/Comment/CommentListComponent.vue";
 import PostComponent from "../components/Post/PostComponent.vue";
@@ -13,11 +13,12 @@ let parent = ref<Record<string, any> | null>(null);
 async function getPostOrComment(id: string | string[]) {
   let result;
   try {
-    result = await fetchy(`/api/posts/${id}`, "GET");
+    result = await fetchy(`/api/posts/${id}`, "GET", { alert: false });
   } catch {
     try {
-      result = await fetchy(`/api/comments/${id}`, "GET");
+      result = await fetchy(`/api/comments/${id}`, "GET", { alert: false });
     } catch (_) {
+      parent.value = null;
       return;
     }
   }
@@ -29,8 +30,8 @@ onBeforeMount(async () => {
   loaded.value = true;
 });
 
-onUpdated(async () => {
-  if (currentRoute.params.id !== parent.value?._id) {
+onBeforeUpdate(async () => {
+  if (parent.value && currentRoute.params.id !== parent.value._id) {
     loaded.value = false;
     await getPostOrComment(currentRoute.params.id);
     loaded.value = true;
@@ -39,13 +40,14 @@ onUpdated(async () => {
 </script>
 
 <template>
-  <section class="posts" v-if="loaded">
+  <section class="posts" v-if="loaded && parent">
     <article>
       <PostComponent :post="parent" />
     </article>
   </section>
+  <p v-else-if="loaded">Post or comment not found.</p>
   <p v-else>Loading...</p>
-  <div class="comments" v-if="loaded" style="padding-bottom: 1em">
+  <div class="comments" v-if="loaded && parent" style="padding-bottom: 1em">
     <CommentListComponent :parent="parent" />
   </div>
 </template>

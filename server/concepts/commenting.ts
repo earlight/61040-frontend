@@ -61,7 +61,7 @@ export default class CommentingConcept {
 
   async assertCommentExists(_id: ObjectId) {
     if (!(await this.comments.readOne({ _id }))) {
-      throw new NotFoundError(`Post or Comment ${_id} does not exist!`);
+      throw new NotFoundError(`Comment ${_id} does not exist!`);
     }
   }
 }

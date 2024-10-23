@@ -109,6 +109,11 @@ export default class AuthenticatingConcept {
     if (!username || !password) {
       throw new BadValuesError("Username and password must be non-empty!");
     }
+
+    if (!username.match(/^[a-z0-9]+$/i)) {
+      throw new BadValuesError("Username must contain only alphanumeric characters!");
+    }
+
     await this.assertUsernameUnique(username);
   }
 
