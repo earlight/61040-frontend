@@ -62,7 +62,7 @@ class Routes {
     Sessioning.isLoggedOut(session);
     const created = await Authing.create(username, password);
     if (created.user) {
-      Scoring.create(created.user._id);
+      await Scoring.create(created.user._id);
     }
     return created;
   }
@@ -143,8 +143,7 @@ class Routes {
   @Router.get("/posts/:id")
   async getPost(id: string) {
     const oid = new ObjectId(id);
-    await Posting.assertPostExists(oid);
-    return Responses.post(await Posting.getPost(oid));
+    return Responses.post(await Posting.getById(oid));
   }
 
   /**
@@ -160,7 +159,7 @@ class Routes {
     const user = Sessioning.getUser(session);
     const created = await Posting.create(user, content, options);
     if (created.post) {
-      Scoring.create(created.post._id);
+      await Scoring.create(created.post._id);
     }
     return { msg: created.msg, post: await Responses.post(created.post) };
   }
@@ -212,6 +211,19 @@ class Routes {
   }
 
   /**
+   * Returns a comment by object ID.
+   *
+   * @param id - The object ID of the comment.
+   * @returns CommentDoc - The comment.
+   */
+  @Router.get("/comments/:id")
+  async getComment(id: string) {
+    const oid = new ObjectId(id);
+    await Commenting.assertCommentExists(oid);
+    return Responses.comment(await Commenting.getById(oid));
+  }
+
+  /**
    * Creates a comment under a post or another comment, as well as a default initial score for the comment.
    *
    * @param session - The session of the user creating the comment.
@@ -230,7 +242,7 @@ class Routes {
     }
     const created = await Commenting.create(user, content, parentOid);
     if (created.comment) {
-      Scoring.create(created.comment._id);
+      await Scoring.create(created.comment._id);
     }
     return { msg: created.msg, comment: await Responses.comment(created.comment) };
   }

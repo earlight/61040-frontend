@@ -40,6 +40,10 @@ export default class CommentingConcept {
     return await this.comments.readMany({ parent });
   }
 
+  async getById(_id: ObjectId) {
+    return await this.comments.readOne({ _id });
+  }
+
   async delete(_id: ObjectId) {
     await this.comments.deleteOne({ _id });
     return { msg: "Comment deleted successfully!" };
@@ -57,7 +61,7 @@ export default class CommentingConcept {
 
   async assertCommentExists(_id: ObjectId) {
     if (!(await this.comments.readOne({ _id }))) {
-      throw new NotFoundError(`Comment ${_id} does not exist!`);
+      throw new NotFoundError(`Post or Comment ${_id} does not exist!`);
     }
   }
 }

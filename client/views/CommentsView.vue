@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, onUpdated, ref } from "vue";
 import { useRoute } from "vue-router";
 import CommentListComponent from "../components/Comment/CommentListComponent.vue";
 import PostComponent from "../components/Post/PostComponent.vue";
@@ -10,20 +10,31 @@ const currentRoute = useRoute();
 let loaded = ref(false);
 let parent = ref<Record<string, any> | null>(null);
 
-async function getPost(id: string | string[]) {
-  let postResults;
+async function getPostOrComment(id: string | string[]) {
+  let result;
   try {
-    postResults = await fetchy(`/api/posts/${id}`, "GET");
-  } catch (_) {
-    return;
+    result = await fetchy(`/api/posts/${id}`, "GET");
+  } catch {
+    try {
+      result = await fetchy(`/api/comments/${id}`, "GET");
+    } catch (_) {
+      return;
+    }
   }
-  return postResults;
+  parent.value = result;
 }
 
 onBeforeMount(async () => {
-  const post = await getPost(currentRoute.params.id);
-  parent.value = post;
+  await getPostOrComment(currentRoute.params.id);
   loaded.value = true;
+});
+
+onUpdated(async () => {
+  if (currentRoute.params.id !== parent.value?._id) {
+    loaded.value = false;
+    await getPostOrComment(currentRoute.params.id);
+    loaded.value = true;
+  }
 });
 </script>
 
@@ -51,22 +62,5 @@ p,
 .row {
   margin: 0 auto;
   max-width: 80em;
-}
-
-article {
-  background-color: var(--base-bg);
-  border-radius: 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  padding: 1em;
-}
-
-.posts {
-  padding: 1em;
-}
-
-.comments {
-  margin-left: 2em;
 }
 </style>

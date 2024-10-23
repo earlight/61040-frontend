@@ -5,15 +5,6 @@
   --base-bg: #f1f3f5;
 }
 
-button.btn-small {
-  font-size: 80%;
-}
-
-button.button-error {
-  color: white;
-  background: var(--red);
-}
-
 a.button {
   color: #212529;
   background-color: #f1f3f5;
@@ -23,10 +14,64 @@ a.button {
   text-decoration: none;
 }
 
+article {
+  background-color: var(--base-bg);
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 1em;
+}
+
+button.btn-small {
+  font-size: 80%;
+}
+
+button.button-error {
+  color: white;
+  background: var(--red);
+}
+
+.author {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.base {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.base article:only-child {
+  margin-left: auto;
+}
+
 .column {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1em;
+}
+.comments {
+  margin-left: 2em;
+}
+
+.posts {
+  padding: 1em;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 60em;
+}
+
+.timestamp {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 0.9em;
+  font-style: italic;
 }

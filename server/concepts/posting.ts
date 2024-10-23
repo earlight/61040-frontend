@@ -40,7 +40,7 @@ export default class PostingConcept {
     return await this.posts.readMany({ author });
   }
 
-  async getPost(_id: ObjectId) {
+  async getById(_id: ObjectId) {
     return await this.posts.readOne({ _id });
   }
 
