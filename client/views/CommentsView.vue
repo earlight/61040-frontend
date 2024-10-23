@@ -45,7 +45,7 @@ onUpdated(async () => {
     </article>
   </section>
   <p v-else>Loading...</p>
-  <div class="comments" v-if="loaded">
+  <div class="comments" v-if="loaded" style="padding-bottom: 1em">
     <CommentListComponent :parent="parent" />
   </div>
 </template>
