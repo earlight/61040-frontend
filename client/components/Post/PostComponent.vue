@@ -18,6 +18,9 @@ const deletePost = async () => {
     return;
   }
   emit("refreshPosts");
+  if (props.post._id == currentRoute.params.id) {
+    void router.go(0);
+  }
 };
 
 async function viewComments() {

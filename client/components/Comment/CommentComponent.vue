@@ -19,6 +19,9 @@ const deleteComment = async () => {
     return;
   }
   emit("refreshComments");
+  if (props.comment._id == currentRoute.params.id) {
+    void router.go(0);
+  }
 };
 
 async function viewComments() {
@@ -36,7 +39,7 @@ async function viewComments() {
     </menu>
     <article class="timestamp">Created on: {{ formatDate(props.comment.dateCreated) }}</article>
   </div>
-  <div class="comments">
+  <div class="comments" v-if="props.comment._id != currentRoute.params.id">
     <CommentListComponent :parent="props.comment" />
   </div>
 </template>
