@@ -36,8 +36,12 @@ export default class ReactingConcept {
     return await this.reactions.readMany({ author });
   }
 
-  async getByItem(item: ObjectId) {
-    return await this.reactions.readMany({ item });
+  async getByItem(type: string, item: ObjectId) {
+    return await this.reactions.readMany({ type, item });
+  }
+
+  async getByItemAuthor(author: ObjectId, item: ObjectId) {
+    return await this.reactions.readOne({ author, item });
   }
 
   async update(author: ObjectId, type: string, item: ObjectId) {

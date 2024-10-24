@@ -289,9 +289,25 @@ class Routes {
    * @returns ReactionDoc[] - A list of reactions.
    */
   @Router.get("/reactions/item")
-  async getReactionsByItem(item: string) {
+  async getReactionsByItem(type: string, item: string) {
+    console.log("HERE 3", type, item);
     const itemOid = new ObjectId(item);
-    return Responses.reactions(await Reacting.getByItem(itemOid));
+    return Responses.reactions(await Reacting.getByItem(type, itemOid));
+  }
+
+  /**
+   * Returns a reaction of the current session user to a post or comment.
+   *
+   * @param session - The session of the user.
+   * @param id - The object ID of the reaction.
+   * @returns ReactionDoc - A reaction.
+   */
+  @Router.get("/reactions/my")
+  async getMyReaction(session: SessionDoc, item: string) {
+    const user = Sessioning.getUser(session);
+    const itemOid = new ObjectId(item);
+    await Reacting.assertReactionExists(user, itemOid);
+    return Responses.reaction(await Reacting.getByItemAuthor(user, itemOid));
   }
 
   /**
@@ -340,7 +356,7 @@ class Routes {
    * @param item - The ObjectId of the post or comment that the reaction is for.
    * @returns { msg: string } - A message indicating success.
    */
-  @Router.delete("/reactions")
+  @Router.delete("/reactions/:item")
   async deleteReaction(session: SessionDoc, item: string) {
     const user = Sessioning.getUser(session);
     const itemOid = new ObjectId(item);
@@ -394,7 +410,7 @@ class Routes {
    * @param username - The username of the user to unfollow.
    * @returns { msg: string } - A message indicating success.
    */
-  @Router.delete("/follow")
+  @Router.delete("/follow/:username")
   async unfollow(session: SessionDoc, username: string) {
     const user = Sessioning.getUser(session);
     const followeeOid = (await Authing.getUserByUsername(username))._id;

@@ -5,6 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
+import ReactionsComponent from "../React/ReactionsComponent.vue";
 
 const currentRoute = useRoute();
 const props = defineProps(["post"]);
@@ -31,6 +32,7 @@ async function viewComments() {
 <template>
   <p class="author">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
+  <ReactionsComponent :item="props.post" />
   <div class="base">
     <menu>
       <button v-if="props.post._id != currentRoute.params.id" class="btn-small pure-button" @click="viewComments">View Comments & Reply</button>
