@@ -5,7 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
-import ReactionsComponent from "../React/ReactionsComponent.vue";
+import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 
 const currentRoute = useRoute();
