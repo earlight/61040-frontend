@@ -60,11 +60,6 @@ const getReactions = async () => {
   await getLikes();
   await getDislikes();
   await getReactionStatus();
-  console.log("Item: " + props.item._id);
-  console.log("Likes: " + likes.value);
-  console.log("Dislikes: " + dislikes.value);
-  console.log("Liked: " + liked.value);
-  console.log("Disliked: " + disliked.value);
 };
 
 const postReaction = async (type: "like" | "dislike") => {
