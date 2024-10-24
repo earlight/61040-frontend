@@ -85,6 +85,12 @@ button.button-error {
   margin: 0;
 }
 
+.followers {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
 .row {
   display: flex;
   justify-content: space-between;

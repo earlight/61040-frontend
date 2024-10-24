@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FollowStatsComponent from "@/components/Follow/FollowStatsComponent.vue";
 import PostListComponent from "@/components/Post/PostListComponent.vue";
 import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
@@ -38,6 +39,7 @@ onBeforeUpdate(async () => {
   <div v-if="loaded && user">
     <section>
       <h1>Profile of {{ user.username }}</h1>
+      <FollowStatsComponent :user="user" />
       <h2>{{ user.username }}'s posts:</h2>
     </section>
     <PostListComponent :profile="user.username" />
