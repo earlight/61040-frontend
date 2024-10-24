@@ -5,6 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
+import FollowComponent from "../Follow/FollowComponent.vue";
 import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 
@@ -35,7 +36,10 @@ async function viewAuthor() {
 </script>
 
 <template>
-  <p class="author" @click="viewAuthor">{{ props.comment.author }}</p>
+  <menu>
+    <p class="author" @click="viewAuthor">{{ props.comment.author }}</p>
+    <FollowComponent :username="props.comment.author" />
+  </menu>
   <p>{{ props.comment.content }}</p>
   <ReactionsComponent :item="props.comment" />
   <div class="base">

@@ -6,7 +6,6 @@ import { fetchy } from "../../utils/fetchy";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
 const props = defineProps(["item"]);
-const types = ["like", "dislike"];
 
 const loaded = ref(false);
 const likes = ref<number | null>(null);
@@ -66,7 +65,6 @@ const postReaction = async (type: "like" | "dislike") => {
   try {
     await fetchy(`/api/reactions`, "POST", {
       body: { type, item: props.item._id },
-      alert: false,
     });
   } catch {
     return;
@@ -77,7 +75,6 @@ const updateReaction = async (type: "like" | "dislike") => {
   try {
     await fetchy(`/api/reactions`, "PATCH", {
       body: { type, item: props.item._id },
-      alert: false,
     });
   } catch {
     return;
@@ -86,9 +83,7 @@ const updateReaction = async (type: "like" | "dislike") => {
 
 const deleteReaction = async () => {
   try {
-    await fetchy(`/api/reactions/${props.item._id}`, "DELETE", {
-      alert: false,
-    });
+    await fetchy(`/api/reactions/${props.item._id}`, "DELETE");
   } catch {
     return;
   }

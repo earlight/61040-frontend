@@ -5,6 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
+import FollowComponent from "../Follow/FollowComponent.vue";
 import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
 
 const currentRoute = useRoute();
@@ -34,7 +35,10 @@ async function viewAuthor() {
 </script>
 
 <template>
-  <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
+  <menu>
+    <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
+    <FollowComponent :username="props.post.author" />
+  </menu>
   <p>{{ props.post.content }}</p>
   <ReactionsComponent :item="props.post" />
   <div class="base">
