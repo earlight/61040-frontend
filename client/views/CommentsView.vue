@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFollowsStore } from "@/stores/follows";
+import { storeToRefs } from "pinia";
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { useRoute } from "vue-router";
 import CommentComponent from "../components/Comment/CommentComponent.vue";
@@ -7,11 +9,12 @@ import PostComponent from "../components/Post/PostComponent.vue";
 import { fetchy } from "../utils/fetchy";
 
 const currentRoute = useRoute();
+const followsStore = useFollowsStore();
+const { follows } = storeToRefs(useFollowsStore());
 
 let loaded = ref(false);
 let parent = ref<Record<string, any> | null>(null);
 let isPost = ref(false);
-let follows = ref<Array<Record<string, string>>>([]);
 
 async function getPostOrComment(id: string | string[]) {
   let result;
@@ -30,19 +33,9 @@ async function getPostOrComment(id: string | string[]) {
   parent.value = result;
 }
 
-async function getFollows() {
-  let followResults;
-  try {
-    followResults = await fetchy("/api/follows", "GET");
-  } catch (_) {
-    return;
-  }
-  follows.value = followResults;
-}
-
 onBeforeMount(async () => {
   await getPostOrComment(currentRoute.params.id);
-  await getFollows();
+  await followsStore.getFollows();
   loaded.value = true;
 });
 
@@ -50,7 +43,7 @@ onBeforeUpdate(async () => {
   if (parent.value && currentRoute.params.id !== parent.value._id) {
     loaded.value = false;
     await getPostOrComment(currentRoute.params.id);
-    await getFollows();
+    await followsStore.getFollows();
     loaded.value = true;
   }
 });
@@ -59,16 +52,16 @@ onBeforeUpdate(async () => {
 <template>
   <section class="posts" v-if="loaded && parent">
     <article v-if="isPost">
-      <PostComponent :post="parent" :follows="follows" @refreshFollows="getFollows" />
+      <PostComponent :post="parent" :follows="follows" @refreshFollows="followsStore.getFollows" />
     </article>
     <article v-else>
-      <CommentComponent :comment="parent" :follows="follows" @refreshFollows="getFollows" />
+      <CommentComponent :comment="parent" :follows="follows" @refreshFollows="followsStore.getFollows" />
     </article>
   </section>
   <p v-else-if="loaded">Post or comment not found.</p>
   <p v-else>Loading...</p>
   <div class="comments" v-if="loaded && parent" style="padding-bottom: 1em">
-    <CommentListComponent :parent="parent" :follows="follows" @refreshFollows="getFollows" />
+    <CommentListComponent :parent="parent" :follows="follows" @refreshFollows="followsStore.getFollows" />
   </div>
 </template>
 

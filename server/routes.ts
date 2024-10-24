@@ -290,7 +290,6 @@ class Routes {
    */
   @Router.get("/reactions/item")
   async getReactionsByItem(type: string, item: string) {
-    console.log("HERE 3", type, item);
     const itemOid = new ObjectId(item);
     return Responses.reactions(await Reacting.getByItem(type, itemOid));
   }

@@ -15,6 +15,11 @@ export const useFollowsStore = defineStore(
         return;
       }
     };
+
+    return {
+      follows,
+      getFollows,
+    };
   },
   { persist: true },
 );
