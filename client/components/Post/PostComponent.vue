@@ -9,8 +9,8 @@ import FollowComponent from "../Follow/FollowComponent.vue";
 import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
 
 const currentRoute = useRoute();
-const props = defineProps(["post"]);
-const emit = defineEmits(["refreshPosts"]);
+const props = defineProps(["post", "follows"]);
+const emit = defineEmits(["refreshPosts", "refreshFollows"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const deletePost = async () => {
@@ -25,6 +25,10 @@ const deletePost = async () => {
   }
 };
 
+async function getFollows() {
+  emit("refreshFollows");
+}
+
 async function viewComments() {
   void router.push({ name: "Comments", params: { id: props.post._id } });
 }
@@ -37,7 +41,7 @@ async function viewAuthor() {
 <template>
   <menu>
     <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
-    <FollowComponent :username="props.post.author" />
+    <FollowComponent :username="props.post.author" :follows="props.follows" @refreshFollows="getFollows" />
   </menu>
   <p>{{ props.post.content }}</p>
   <ReactionsComponent :item="props.post" />

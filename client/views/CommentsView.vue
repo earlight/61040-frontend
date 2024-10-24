@@ -11,6 +11,7 @@ const currentRoute = useRoute();
 let loaded = ref(false);
 let parent = ref<Record<string, any> | null>(null);
 let isPost = ref(false);
+let follows = ref<Array<Record<string, string>>>([]);
 
 async function getPostOrComment(id: string | string[]) {
   let result;
@@ -29,8 +30,19 @@ async function getPostOrComment(id: string | string[]) {
   parent.value = result;
 }
 
+async function getFollows() {
+  let followResults;
+  try {
+    followResults = await fetchy("/api/follows", "GET");
+  } catch (_) {
+    return;
+  }
+  follows.value = followResults;
+}
+
 onBeforeMount(async () => {
   await getPostOrComment(currentRoute.params.id);
+  await getFollows();
   loaded.value = true;
 });
 
@@ -38,6 +50,7 @@ onBeforeUpdate(async () => {
   if (parent.value && currentRoute.params.id !== parent.value._id) {
     loaded.value = false;
     await getPostOrComment(currentRoute.params.id);
+    await getFollows();
     loaded.value = true;
   }
 });
@@ -46,16 +59,16 @@ onBeforeUpdate(async () => {
 <template>
   <section class="posts" v-if="loaded && parent">
     <article v-if="isPost">
-      <PostComponent :post="parent" />
+      <PostComponent :post="parent" :follows="follows" @refreshFollows="getFollows" />
     </article>
     <article v-else>
-      <CommentComponent :comment="parent" />
+      <CommentComponent :comment="parent" :follows="follows" @refreshFollows="getFollows" />
     </article>
   </section>
   <p v-else-if="loaded">Post or comment not found.</p>
   <p v-else>Loading...</p>
   <div class="comments" v-if="loaded && parent" style="padding-bottom: 1em">
-    <CommentListComponent :parent="parent" />
+    <CommentListComponent :parent="parent" :follows="follows" @refreshFollows="getFollows" />
   </div>
 </template>
 

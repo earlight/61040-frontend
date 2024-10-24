@@ -2,34 +2,23 @@
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 
 const { isLoggedIn, currentUsername } = storeToRefs(useUserStore());
-const props = defineProps(["username"]);
+const props = defineProps(["username", "follows"]);
+const emits = defineEmits(["refreshFollows"]);
 
 const loaded = ref(false);
 const following = ref<boolean | null>(null);
 
 const getFollowingStatus = async () => {
-  const query: Record<string, string> = { username: currentUsername.value };
-  console.log("HERE 1: ", query);
-  let followingResults;
-  try {
-    followingResults = await fetchy("/api/following", "GET", { query });
-    console.log("HERE 2: ", followingResults);
-  } catch (_) {
-    return;
-  }
-
-  for (const follow of followingResults) {
-    if (follow.followee === props.username) {
+  for (const follow of props.follows) {
+    if (follow.followee === props.username && follow.follower === currentUsername.value) {
       following.value = true;
-      console.log("HERE 3 YES: ", following.value);
       return;
     }
   }
   following.value = false;
-  console.log("HERE 3 NO: ", following.value);
 };
 
 const follow = async () => {
@@ -37,7 +26,6 @@ const follow = async () => {
     await fetchy(`/api/follow`, "POST", {
       body: { username: props.username },
     });
-    following.value = true;
   } catch (_) {
     return;
   }
@@ -46,7 +34,6 @@ const follow = async () => {
 const unfollow = async () => {
   try {
     await fetchy(`/api/follow/${props.username}`, "DELETE");
-    following.value = false;
   } catch (_) {
     return;
   }
@@ -54,17 +41,27 @@ const unfollow = async () => {
 
 const toggleFollow = async () => {
   if (following.value === true) {
+    following.value = false;
     await unfollow();
   } else if (following.value === false) {
+    following.value = true;
     await follow();
   }
-  await getFollowingStatus();
+  emits("refreshFollows");
 };
 
 onBeforeMount(async () => {
+  emits("refreshFollows");
   await getFollowingStatus();
   loaded.value = true;
 });
+
+watch(
+  () => props.follows,
+  async () => {
+    await getFollowingStatus();
+  },
+);
 </script>
 
 <template>

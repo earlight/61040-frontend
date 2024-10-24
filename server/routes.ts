@@ -366,6 +366,16 @@ class Routes {
   }
 
   /**
+   * Get all follows.
+   *
+   * @returns FollowDoc[] - A list of follows.
+   */
+  @Router.get("/follows")
+  async getFollows() {
+    return await Responses.follows(await Following.getFollows());
+  }
+
+  /**
    * Get a user's followers.
    *
    * @param username - The username of the user.

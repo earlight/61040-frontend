@@ -20,6 +20,10 @@ export default class FollowingConcept {
     this.follows = new DocCollection<FollowDoc>(collectionName);
   }
 
+  async getFollows() {
+    return await this.follows.readMany({});
+  }
+
   async getFollowers(user: ObjectId) {
     return await this.follows.readMany({ followee: user });
   }

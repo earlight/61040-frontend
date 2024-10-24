@@ -33,11 +33,11 @@ export default class CommentingConcept {
   }
 
   async getByAuthor(author: ObjectId) {
-    return await this.comments.readMany({ author });
+    return await this.comments.readMany({ author }, { sort: { _id: -1 } });
   }
 
   async getByParent(parent: ObjectId) {
-    return await this.comments.readMany({ parent });
+    return await this.comments.readMany({ parent }, { sort: { _id: -1 } });
   }
 
   async getById(_id: ObjectId) {
