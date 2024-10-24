@@ -8,8 +8,7 @@ import CommentComponent from "./CommentComponent.vue";
 import CreateCommentForm from "./CreateCommentForm.vue";
 
 const currentRoute = useRoute();
-const props = defineProps(["parent", "follows"]);
-const emits = defineEmits(["refreshFollows"]);
+const props = defineProps(["parent"]);
 const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
@@ -26,13 +25,8 @@ async function getCommentsByParent(parent: string) {
   comments.value = commentResults;
 }
 
-async function getFollows() {
-  emits("refreshFollows");
-}
-
 onBeforeMount(async () => {
   await getCommentsByParent(props.parent._id);
-  emits("refreshFollows"); // TODO
   loaded.value = true;
 });
 </script>
@@ -43,7 +37,7 @@ onBeforeMount(async () => {
   </section>
   <section class="comments" v-if="loaded && comments.length !== 0">
     <article v-for="comment in comments" :key="comment._id">
-      <CommentComponent :comment="comment" :follows="follows" @refreshComments="getCommentsByParent(props.parent._id)" @refreshFollows="getFollows" />
+      <CommentComponent :comment="comment" @refreshComments="getCommentsByParent(props.parent._id)" />
     </article>
   </section>
   <p v-else-if="loaded && props.parent._id == currentRoute.params.id">No comments yet.</p>

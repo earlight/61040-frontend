@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import CreatePostForm from "@/components/Post/CreatePostForm.vue";
 import PostComponent from "@/components/Post/PostComponent.vue";
-import { useFollowsStore } from "@/stores/follows";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
-const followsStore = useFollowsStore();
-const { follows } = storeToRefs(useFollowsStore());
 const { isLoggedIn } = storeToRefs(useUserStore());
 const props = defineProps(["profile"]);
 
@@ -31,7 +28,6 @@ async function getPosts(author?: string) {
 
 onBeforeMount(async () => {
   await getPosts(props.profile ? props.profile : undefined);
-  await followsStore.getFollows();
   loaded.value = true;
 });
 </script>
@@ -48,7 +44,7 @@ onBeforeMount(async () => {
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <PostComponent :post="post" :follows="follows" @refreshPosts="getPosts(props.profile ? props.profile : undefined)" @refreshFollows="followsStore.getFollows" />
+      <PostComponent :post="post" @refreshPosts="getPosts(props.profile ? props.profile : undefined)" />
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>

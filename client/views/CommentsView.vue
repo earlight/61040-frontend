@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useFollowsStore } from "@/stores/follows";
-import { storeToRefs } from "pinia";
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { useRoute } from "vue-router";
 import CommentComponent from "../components/Comment/CommentComponent.vue";
@@ -9,8 +7,6 @@ import PostComponent from "../components/Post/PostComponent.vue";
 import { fetchy } from "../utils/fetchy";
 
 const currentRoute = useRoute();
-const followsStore = useFollowsStore();
-const { follows } = storeToRefs(useFollowsStore());
 
 let loaded = ref(false);
 let parent = ref<Record<string, any> | null>(null);
@@ -35,7 +31,6 @@ async function getPostOrComment(id: string | string[]) {
 
 onBeforeMount(async () => {
   await getPostOrComment(currentRoute.params.id);
-  await followsStore.getFollows();
   loaded.value = true;
 });
 
@@ -43,7 +38,6 @@ onBeforeUpdate(async () => {
   if (parent.value && currentRoute.params.id !== parent.value._id) {
     loaded.value = false;
     await getPostOrComment(currentRoute.params.id);
-    await followsStore.getFollows();
     loaded.value = true;
   }
 });
@@ -52,16 +46,16 @@ onBeforeUpdate(async () => {
 <template>
   <section class="posts" v-if="loaded && parent">
     <article v-if="isPost">
-      <PostComponent :post="parent" :follows="follows" @refreshFollows="followsStore.getFollows" />
+      <PostComponent :post="parent" />
     </article>
     <article v-else>
-      <CommentComponent :comment="parent" :follows="follows" @refreshFollows="followsStore.getFollows" />
+      <CommentComponent :comment="parent" />
     </article>
   </section>
   <p v-else-if="loaded">Post or comment not found.</p>
   <p v-else>Loading...</p>
   <div class="comments" v-if="loaded && parent" style="padding-bottom: 1em">
-    <CommentListComponent :parent="parent" :follows="follows" @refreshFollows="followsStore.getFollows" />
+    <CommentListComponent :parent="parent" />
   </div>
 </template>
 

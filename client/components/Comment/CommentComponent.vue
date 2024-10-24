@@ -10,8 +10,8 @@ import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 
 const currentRoute = useRoute();
-const props = defineProps(["comment", "follows"]);
-const emit = defineEmits(["refreshComments", "refreshFollows"]);
+const props = defineProps(["comment"]);
+const emit = defineEmits(["refreshComments"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const deleteComment = async () => {
@@ -26,10 +26,6 @@ const deleteComment = async () => {
   }
 };
 
-async function getFollows() {
-  emit("refreshFollows");
-}
-
 async function viewComments() {
   void router.push({ name: "Comments", params: { id: props.comment._id } });
 }
@@ -42,7 +38,7 @@ async function viewAuthor() {
 <template>
   <menu>
     <p class="author" @click="viewAuthor">{{ props.comment.author }}</p>
-    <FollowComponent :username="props.comment.author" :follows="props.follows" @refreshFollows="getFollows" />
+    <FollowComponent :username="props.comment.author" />
   </menu>
   <p>{{ props.comment.content }}</p>
   <ReactionsComponent :item="props.comment" />
@@ -54,7 +50,7 @@ async function viewAuthor() {
     <article class="timestamp">Created on: {{ formatDate(props.comment.dateCreated) }}</article>
   </div>
   <div class="comments" v-if="props.comment._id != currentRoute.params.id">
-    <CommentListComponent :parent="props.comment" :follows="props.follows" @refreshFollows="getFollows" />
+    <CommentListComponent :parent="props.comment" />
   </div>
 </template>
 
