@@ -27,10 +27,14 @@ const deletePost = async () => {
 async function viewComments() {
   void router.push({ name: "Comments", params: { id: props.post._id } });
 }
+
+async function viewAuthor() {
+  void router.push({ name: "Profile", params: { username: props.post.author } });
+}
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
+  <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
   <ReactionsComponent :item="props.post" />
   <div class="base">
@@ -45,11 +49,6 @@ async function viewComments() {
 <style scoped>
 p {
   margin: 0em;
-}
-
-.author {
-  font-weight: bold;
-  font-size: 1.2em;
 }
 
 menu {

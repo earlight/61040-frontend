@@ -8,6 +8,7 @@ import { onBeforeMount, ref } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
+const props = defineProps(["profile"]);
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
@@ -26,24 +27,24 @@ async function getPosts(author?: string) {
 }
 
 onBeforeMount(async () => {
-  await getPosts();
+  await getPosts(props.profile ? props.profile : undefined);
   loaded.value = true;
 });
 </script>
 
 <template>
-  <section v-if="isLoggedIn">
+  <section v-if="isLoggedIn && !props.profile">
     <h2>Create a post:</h2>
     <CreatePostForm @refreshPosts="getPosts" />
   </section>
-  <div class="row">
+  <div class="row" v-if="!props.profile">
     <h2 v-if="!searchAuthor">Posts:</h2>
     <h2 v-else>Posts by {{ searchAuthor }}:</h2>
     <SearchPostForm @getPostsByAuthor="getPosts" />
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <PostComponent :post="post" @refreshPosts="getPosts" />
+      <PostComponent :post="post" @refreshPosts="getPosts(props.profile ? props.profile : undefined)" />
     </article>
   </section>
   <p v-else-if="loaded">No posts found</p>

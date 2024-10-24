@@ -35,6 +35,10 @@ button.button-error {
 .author {
   font-weight: bold;
   font-size: 1.2em;
+  cursor: pointer;
+}
+.author:hover {
+  text-decoration: underline;
 }
 
 .base {

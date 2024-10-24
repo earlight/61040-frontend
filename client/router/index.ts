@@ -6,16 +6,12 @@ import CommentsView from "../views/CommentsView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import ProfileView from "../views/ProfileView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
-      path: "/comments/:id",
-      name: "Comments",
-      component: CommentsView,
-    },
     {
       path: "/",
       name: "Home",
@@ -38,6 +34,16 @@ const router = createRouter({
           return { name: "Settings" };
         }
       },
+    },
+    {
+      path: "/comments/:id",
+      name: "Comments",
+      component: CommentsView,
+    },
+    {
+      path: "/profile/:username",
+      name: "Profile",
+      component: ProfileView,
     },
     {
       path: "/:catchAll(.*)",
