@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useScoresStore } from "@/stores/scores";
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
+const scoresStore = useScoresStore();
 const props = defineProps(["parent"]);
 const content = ref("");
 const emit = defineEmits(["refreshComments"]);
@@ -16,6 +18,8 @@ const createComment = async (content: string) => {
   }
   emit("refreshComments");
   emptyForm();
+  await scoresStore.updateContentScore(props.parent._id);
+  await scoresStore.getScores();
 };
 
 const emptyForm = () => {

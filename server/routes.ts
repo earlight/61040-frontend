@@ -212,6 +212,17 @@ class Routes {
   }
 
   /**
+   * Returns the sentiment of a comment.
+   *
+   * @param content - The content of the comment.
+   * @returns number - The sentiment of the comment.
+   */
+  @Router.get("/comments/sentiment")
+  async test(content: string) {
+    return await Commenting.getSentiment(content);
+  }
+
+  /**
    * Returns a comment by object ID.
    *
    * @param id - The object ID of the comment.
@@ -222,12 +233,6 @@ class Routes {
     const oid = new ObjectId(id);
     await Commenting.assertCommentExists(oid);
     return Responses.comment(await Commenting.getById(oid));
-  }
-
-  @Router.get("/comments/sentiment")
-  @Router.validate(z.object({ author: z.string().optional() }))
-  async getCommentSentiment() {
-    return 99;
   }
 
   /**

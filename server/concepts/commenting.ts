@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-import { PorterStemmer, SentimentAnalyzer } from "natural";
+import { PorterStemmer, SentimentAnalyzer, WordTokenizer } from "natural";
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { NotAllowedError, NotFoundError } from "./errors";
 
@@ -10,7 +10,8 @@ export interface CommentDoc extends BaseDoc {
   parent: ObjectId;
 }
 
-const analyzer = new SentimentAnalyzer("English", PorterStemmer, "afinn");
+const ANALYZER = new SentimentAnalyzer("English", PorterStemmer, "afinn");
+const TOKENIZER = new WordTokenizer();
 
 /**
  * concept: Commenting [Author, Parent]
@@ -47,13 +48,9 @@ export default class CommentingConcept {
     return await this.comments.readOne({ _id });
   }
 
-  async getSentiment(_id: ObjectId) {
-    console.log("HERE 2");
-    const comment = await this.comments.readOne({ _id });
-    if (!comment) {
-      throw new NotFoundError(`Comment ${_id} does not exist!`);
-    }
-    return analyzer.getSentiment(comment.content.split(" "));
+  async getSentiment(content: string) {
+    const tokens = TOKENIZER.tokenize(content);
+    return ANALYZER.getSentiment(tokens);
   }
 
   async delete(_id: ObjectId) {

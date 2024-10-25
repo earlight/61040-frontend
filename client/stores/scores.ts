@@ -5,6 +5,8 @@ import { ref } from "vue";
 export const useScoresStore = defineStore(
   "scores",
   () => {
+    const MIN_SCORE = 0;
+    const MAX_SCORE = 1.0;
     const DEFAULT_SCORE = 0.5;
 
     const scores = ref<Array<Record<string, string>>>([]);
@@ -39,7 +41,6 @@ export const useScoresStore = defineStore(
       if (totalReactions !== 0) {
         reactionScore = (likes ?? 0) / totalReactions;
       }
-      console.log("reactionScore: ", reactionScore);
       return reactionScore;
     };
 
@@ -58,25 +59,27 @@ export const useScoresStore = defineStore(
 
       let commentScore = 0;
       for (const comment of commentsResults) {
-        const commentSentiment = await computeCommentSentiment();
-        console.log("comment: ", comment.content);
+        const commentSentiment = await computeCommentSentiment(comment.content);
         commentScore += commentSentiment;
       }
       commentScore = commentScore / totalComments;
-      console.log("commentScore: ", commentScore);
       return commentScore;
     };
 
-    const computeCommentSentiment = async () => {
-      console.log("HERE 1");
+    const computeCommentSentiment = async (content: string) => {
+      let sentimentScore = DEFAULT_SCORE;
       try {
-        await fetchy("/api/comments/sentiment", "GET", {});
-        console.log("HERE 2 GOOD:");
+        sentimentScore = await fetchy("/api/comments/sentiment", "GET", { query: { content } });
       } catch (_) {
-        console.log("HERE 2 BAD:", _);
         return DEFAULT_SCORE;
       }
-      return 77;
+      // bound sentiment score from [-5, 5] to [-1, 1]
+      sentimentScore = Math.max(-1.0, Math.min(1.0, sentimentScore));
+
+      // rescale sentiment score from [-1, 1] to [0, 1]
+      sentimentScore = (sentimentScore + 1) / 2;
+
+      return sentimentScore;
     };
 
     const updateContentScore = async (item: string) => {
@@ -84,8 +87,10 @@ export const useScoresStore = defineStore(
 
       const commentScore = await computeCommentScore(item);
 
-      const score = Math.round(100 * ((reactionScore + commentScore) / 2));
-      console.log("score: ", score);
+      let weightedScore = (reactionScore + commentScore) / 2;
+      weightedScore = Math.max(MIN_SCORE, Math.min(MAX_SCORE, weightedScore));
+
+      const score = Math.round(100 * weightedScore);
 
       try {
         await fetchy(`/api/score`, "PATCH", {

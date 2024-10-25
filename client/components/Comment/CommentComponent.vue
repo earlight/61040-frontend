@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import router from "@/router";
+import { useScoresStore } from "@/stores/scores";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
@@ -10,6 +11,7 @@ import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
 import ContentScoreComponent from "../Score/ContentScoreComponent.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 
+const scoresStore = useScoresStore();
 const currentRoute = useRoute();
 const props = defineProps(["comment"]);
 const emit = defineEmits(["refreshComments"]);
@@ -22,6 +24,8 @@ const deleteComment = async () => {
     return;
   }
   emit("refreshComments");
+  await scoresStore.updateContentScore(props.comment.parent);
+  await scoresStore.getScores();
   if (props.comment._id == currentRoute.params.id) {
     void router.go(0);
   }
