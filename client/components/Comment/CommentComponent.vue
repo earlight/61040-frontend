@@ -7,6 +7,7 @@ import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
 import FollowComponent from "../Follow/FollowComponent.vue";
 import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
+import ContentScoreComponent from "../Score/ContentScoreComponent.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 
 const currentRoute = useRoute();
@@ -41,7 +42,10 @@ async function viewAuthor() {
     <FollowComponent :username="props.comment.author" />
   </menu>
   <p>{{ props.comment.content }}</p>
-  <ReactionsComponent :item="props.comment" />
+  <div class="base">
+    <ReactionsComponent :item="props.comment" />
+    <ContentScoreComponent :item="props.comment" />
+  </div>
   <div class="base">
     <menu>
       <button v-if="props.comment._id != currentRoute.params.id" class="btn-small pure-button" @click="viewComments">View Comments & Reply</button>

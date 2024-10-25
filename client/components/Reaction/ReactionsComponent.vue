@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useScoresStore } from "@/stores/scores";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
+const scoresStore = useScoresStore();
 const { isLoggedIn } = storeToRefs(useUserStore());
 const props = defineProps(["item"]);
 
@@ -124,6 +126,8 @@ const react = async (type: "like" | "dislike") => {
     await deleteReaction();
   }
   await getReactions();
+  await scoresStore.updateContentScore(props.item._id);
+  await scoresStore.getScores();
 };
 
 onBeforeMount(async () => {
