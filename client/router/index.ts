@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
 import CommentsView from "../views/CommentsView.vue";
+import FollowsView from "../views/FollowsView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -44,6 +45,16 @@ const router = createRouter({
       path: "/profile/:username",
       name: "Profile",
       component: ProfileView,
+    },
+    {
+      path: "/followers/:username",
+      name: "Followers",
+      component: FollowsView,
+    },
+    {
+      path: "/following/:username",
+      name: "Following",
+      component: FollowsView,
     },
     {
       path: "/:catchAll(.*)",

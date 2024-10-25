@@ -38,7 +38,7 @@ onBeforeUpdate(async () => {
 <template>
   <div v-if="loaded && user">
     <section>
-      <h1>Profile of {{ user.username }}</h1>
+      <h1>{{ user.username }}'s Profile</h1>
       <FollowStatsComponent :user="user" />
       <h2>{{ user.username }}'s posts:</h2>
     </section>

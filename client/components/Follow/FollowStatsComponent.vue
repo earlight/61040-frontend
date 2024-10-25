@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from "@/router";
 import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, ref } from "vue";
 
@@ -30,6 +31,14 @@ async function getFollowing() {
   following.value = followingResults;
 }
 
+async function viewFollowers() {
+  void router.push({ name: "Followers", params: { username: props.user.username } });
+}
+
+async function viewFollowing() {
+  void router.push({ name: "Following", params: { username: props.user.username } });
+}
+
 onBeforeMount(async () => {
   await getFollowers();
   await getFollowing();
@@ -38,8 +47,12 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="followers">
-    <p>Followers: {{ followers.length }}</p>
-    <p>Following: {{ following.length }}</p>
+  <div class="followers" v-if="loaded">
+    <p class="clickable" @click="viewFollowers">Followers: {{ followers.length }}</p>
+    <p class="clickable" @click="viewFollowing">Following: {{ following.length }}</p>
+  </div>
+  <div class="followers" v-else>
+    <p>Loading...</p>
+    <p></p>
   </div>
 </template>
