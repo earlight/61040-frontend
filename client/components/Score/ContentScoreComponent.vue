@@ -10,7 +10,7 @@ const props = defineProps(["item"]);
 const loaded = ref(false);
 const itemScore = ref<string | null>(null);
 
-const getParentScore = async () => {
+const getItemScore = async () => {
   for (const score of scores.value) {
     if (score.item === props.item._id) {
       itemScore.value = score.score;
@@ -21,14 +21,14 @@ const getParentScore = async () => {
 
 onBeforeMount(async () => {
   await scoresStore.getScores();
-  await getParentScore();
+  await getItemScore();
   loaded.value = true;
 });
 
 watch(
   () => scores.value,
   async () => {
-    await getParentScore();
+    await getItemScore();
   },
 );
 </script>
