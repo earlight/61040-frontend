@@ -224,6 +224,12 @@ class Routes {
     return Responses.comment(await Commenting.getById(oid));
   }
 
+  @Router.get("/comments/sentiment")
+  @Router.validate(z.object({ author: z.string().optional() }))
+  async getCommentSentiment() {
+    return 99;
+  }
+
   /**
    * Creates a comment under a post or another comment, as well as a default initial score for the comment.
    *

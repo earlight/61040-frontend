@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 
+import { PorterStemmer, SentimentAnalyzer } from "natural";
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { NotAllowedError, NotFoundError } from "./errors";
 
@@ -8,6 +9,8 @@ export interface CommentDoc extends BaseDoc {
   content: string;
   parent: ObjectId;
 }
+
+const analyzer = new SentimentAnalyzer("English", PorterStemmer, "afinn");
 
 /**
  * concept: Commenting [Author, Parent]
@@ -42,6 +45,15 @@ export default class CommentingConcept {
 
   async getById(_id: ObjectId) {
     return await this.comments.readOne({ _id });
+  }
+
+  async getSentiment(_id: ObjectId) {
+    console.log("HERE 2");
+    const comment = await this.comments.readOne({ _id });
+    if (!comment) {
+      throw new NotFoundError(`Comment ${_id} does not exist!`);
+    }
+    return analyzer.getSentiment(comment.content.split(" "));
   }
 
   async delete(_id: ObjectId) {

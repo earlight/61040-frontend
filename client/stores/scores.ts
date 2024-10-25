@@ -5,6 +5,8 @@ import { ref } from "vue";
 export const useScoresStore = defineStore(
   "scores",
   () => {
+    const DEFAULT_SCORE = 0.5;
+
     const scores = ref<Array<Record<string, string>>>([]);
 
     const getScores = async () => {
@@ -16,7 +18,7 @@ export const useScoresStore = defineStore(
       }
     };
 
-    const updateContentScore = async (item: string) => {
+    const computeReactionScore = async (item: string) => {
       let likesResults;
       let dislikesResults;
       try {
@@ -27,7 +29,7 @@ export const useScoresStore = defineStore(
           query: { type: "dislike", item: item },
         });
       } catch (_) {
-        return;
+        return DEFAULT_SCORE;
       }
       const likes = likesResults.length;
       const dislikes = dislikesResults.length;
@@ -37,16 +39,52 @@ export const useScoresStore = defineStore(
       if (totalReactions !== 0) {
         reactionScore = (likes ?? 0) / totalReactions;
       }
+      console.log("reactionScore: ", reactionScore);
+      return reactionScore;
+    };
 
-      const commentScore = 0.5;
+    const computeCommentScore = async (item: string) => {
+      const query: Record<string, string> = { parent: item };
+      let commentsResults;
+      try {
+        commentsResults = await fetchy(`/api/comments/parent`, "GET", { query });
+      } catch (_) {
+        return DEFAULT_SCORE;
+      }
+      const totalComments = commentsResults.length;
+      if (totalComments === 0) {
+        return DEFAULT_SCORE;
+      }
+
+      let commentScore = 0;
+      for (const comment of commentsResults) {
+        const commentSentiment = await computeCommentSentiment();
+        console.log("comment: ", comment.content);
+        commentScore += commentSentiment;
+      }
+      commentScore = commentScore / totalComments;
+      console.log("commentScore: ", commentScore);
+      return commentScore;
+    };
+
+    const computeCommentSentiment = async () => {
+      console.log("HERE 1");
+      try {
+        await fetchy("/api/comments/sentiment", "GET", {});
+        console.log("HERE 2 GOOD:");
+      } catch (_) {
+        console.log("HERE 2 BAD:", _);
+        return DEFAULT_SCORE;
+      }
+      return 77;
+    };
+
+    const updateContentScore = async (item: string) => {
+      const reactionScore = await computeReactionScore(item);
+
+      const commentScore = await computeCommentScore(item);
 
       const score = Math.round(100 * ((reactionScore + commentScore) / 2));
-
-      console.log("likes: ", likes);
-      console.log("dislikes: ", dislikes);
-      console.log("totalReactions: ", totalReactions);
-      console.log("reactionScore: ", reactionScore);
-      console.log("commentScore: ", commentScore);
       console.log("score: ", score);
 
       try {
