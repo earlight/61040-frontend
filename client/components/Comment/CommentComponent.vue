@@ -75,7 +75,7 @@ watch(
 <template>
   <div :class="['outer', borderClass]" v-if="loaded">
     <div class="author-header">
-      <p class="author" @click="viewAuthor">{{ props.comment.author }}</p>
+      <p class="author button" @click="viewAuthor">{{ props.comment.author }}</p>
       <FollowComponent :username="props.comment.author" />
     </div>
     <p>{{ props.comment.content }}</p>
@@ -83,8 +83,8 @@ watch(
       <div class="base">
         <div class="reactions">
           <ReactionsComponent :item="props.comment" />
-          <div class="toggle-reply button" v-if="isLoggedIn">
-            <img src="@/assets/images/comment.png" alt="Comment" class="icon" @click="toggleReply" />
+          <div class="toggle-reply button" v-if="isLoggedIn" @click="toggleReply">
+            <img src="@/assets/images/comment.png" alt="Comment" class="icon" />
             <p>Reply</p>
           </div>
         </div>
@@ -117,10 +117,11 @@ p {
 }
 
 .toggle-reply {
-  margin: 1em 0;
+  margin-top: 0.25em;
   display: flex;
   align-items: center;
   gap: 0.25em;
+  cursor: pointer;
 }
 
 .reactions {
@@ -128,16 +129,16 @@ p {
 }
 
 .button-delete {
-  background-color: #ff0000; /* Red */
+  background-color: #a5211d; /* Red */
   color: white; /* White text */
-  border: 2px solid; /* Solid border */
-  border-radius: 20px; /* Rounded corners */
-  padding: 10px 20px; /* Comfortable padding */
-  font-size: 16px; /* Font size */
+  border: 2px solid #a5211d; /* Red border */
+  border-radius: 40px; /* Rounded corners */
+  padding: 5px 20px; /* Comfortable padding */
 }
 
 .button-delete:hover {
-  background-color: #dd0000; /* Darker red on hover */
+  background-color: #841a17; /* Darker red */
+  border: 2px solid #841a17; /* Darker red border */
 }
 
 .icon {

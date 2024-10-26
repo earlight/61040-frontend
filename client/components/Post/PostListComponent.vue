@@ -9,7 +9,7 @@ import { onBeforeMount, ref, watch } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
 const scoresStore = useScoresStore();
-const { isLoggedIn, currentUsername } = storeToRefs(useUserStore());
+const { isLoggedIn, currentUsername, followSwitch } = storeToRefs(useUserStore());
 const props = defineProps(["profile", "mode"]);
 
 const loaded = ref(false);
@@ -68,12 +68,17 @@ watch(
 
 <template>
   <section v-if="isLoggedIn && !props.profile">
-    <h2>Create a post:</h2>
     <CreatePostForm @refreshPosts="getPosts" />
   </section>
   <div class="row" v-if="!props.profile">
-    <h2 v-if="!searchAuthor">Posts:</h2>
-    <h2 v-else>Posts by {{ searchAuthor }}:</h2>
+    <div class="column">
+      <h2 v-if="!searchAuthor">Posts:</h2>
+      <h2 v-else>Posts by {{ searchAuthor }}:</h2>
+      <div class="mode" style="text-align: center; margin: 1em 0">
+        <button v-if="isLoggedIn" :class="['button button-mode', { active: !followSwitch }]" @click="followSwitch = false">All</button>
+        <button v-if="isLoggedIn" :class="['button button-mode', { active: followSwitch }]" @click="followSwitch = true">Following</button>
+      </div>
+    </div>
     <SearchPostForm @getPostsByAuthor="getPosts" />
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
@@ -100,5 +105,36 @@ p,
 .row {
   margin: 0 auto;
   max-width: 60em;
+}
+
+.column {
+  gap: 0em;
+  align-items: start;
+}
+
+.button-mode {
+  background-color: #ffffff; /* White background */
+  color: black;
+  border: 2px solid;
+  border-radius: 40px; /* Rounded corners */
+  padding: 10px 20px; /* Comfortable padding */
+  cursor: pointer;
+  margin-right: 1em;
+}
+
+.button-mode.active {
+  background-color: #000000; /* Black background */
+  color: white;
+  border: 2px solid black;
+}
+
+.button-mode:hover.active {
+  transform: none;
+  filter: none;
+  cursor: default;
+}
+
+.button-mode:hover:not(.active) {
+  background-color: #dddddd;
 }
 </style>

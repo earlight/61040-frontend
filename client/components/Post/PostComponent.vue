@@ -144,20 +144,23 @@ p {
 }
 
 .button-delete {
-  background-color: #ff0000; /* Red */
+  background-color: #a5211d; /* Red */
   color: white; /* White text */
-  border: 2px solid; /* Solid border */
+  border: 2px solid #a5211d; /* Red border */
   border-radius: 40px; /* Rounded corners */
-  padding: 10px 20px; /* Comfortable padding */
+  padding: 5px 20px; /* Comfortable padding */
 }
 
 .button-delete:hover {
-  background-color: #dd0000; /* Darker red on hover */
+  background-color: #841a17; /* Darker red on hover */
+  border: 2px solid #841a17; /* Darker red border on hover */
 }
 
 .icon {
-  width: 30px;
-  height: 30px;
+  margin-top: 0.1em;
+  width: 25px;
+  height: 25px;
   padding: 0px;
+  cursor: pointer;
 }
 </style>

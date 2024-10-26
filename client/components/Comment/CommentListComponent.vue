@@ -48,7 +48,9 @@ onBeforeMount(async () => {
       <CreateCommentForm :parent="props.parent" @refreshComments="getCommentsByParent(props.parent._id)" />
     </section>
   </div>
-  <button v-if="props.parent._id !== currentRoute.params.id && comments.length !== 0" class="button button-comment" @click="toggleComments">{{ collapsed ? "Show Replies" : "Hide Replies" }}</button>
+  <button v-if="props.parent._id !== currentRoute.params.id && comments.length !== 0" class="button button-comment" @click="toggleComments">
+    {{ collapsed ? "Show Comments" : "Collapse Comments" }}
+  </button>
   <div class="comments" v-if="!collapsed">
     <section v-if="loaded && comments.length !== 0">
       <article v-for="comment in comments" :key="comment._id">

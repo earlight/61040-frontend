@@ -79,7 +79,7 @@ watch(
 <style scoped>
 .button {
   border-radius: 40px; /* Rounded corners */
-  padding: 10px 20px; /* Comfortable padding */
+  padding: 5px 20px; /* Comfortable padding */
   cursor: pointer;
   transition:
     background-color 0.3s,
@@ -113,10 +113,11 @@ watch(
 .unfollow-button {
   background-color: #000000; /* Black background */
   color: white;
-  border: 2px solid; /* White border (will change dynamically) */
+  border: 2px solid black;
 }
 
 .unfollow-button:hover {
   background-color: #333333;
+  border: 2px solid #333333;
 }
 </style>

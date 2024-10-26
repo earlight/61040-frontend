@@ -183,6 +183,7 @@ onBeforeMount(async () => {
   padding-bottom: 0px; /* Remove bottom padding */
   border-radius: 4px; /* Optional: round the corners */
   cursor: pointer; /* Change cursor to pointer on hover */
+  user-select: none; /* Prevent text selection */
   transition:
     color 0.3s,
     filter 0.3s,
@@ -191,7 +192,6 @@ onBeforeMount(async () => {
 
 .reaction:hover {
   transform: scale(1.1); /* Scale the icon on hover */
-  filter: drop-shadow(0px 0px 5px #888888); /* Add a shadow on hover */
   transition:
     color 0.3s,
     filter 0.3s,
@@ -205,11 +205,13 @@ onBeforeMount(async () => {
 /* Change color for like count */
 .reaction:first-child:hover {
   color: #159d2f; /* Green color for likes */
+  filter: drop-shadow(0px 0px 5px #159d2f); /* Add a green shadow */
 }
 
 /* Change color for dislike count */
 .reaction:last-child:hover {
   color: #a5211d; /* Red color for dislikes */
+  filter: drop-shadow(0px 0px 5px #a5211d); /* Add a red shadow */
 }
 
 .reaction-icon {
