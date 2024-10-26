@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useScoresStore } from "@/stores/scores";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount, ref, watch } from "vue";
 
 const scoresStore = useScoresStore();
 const { scores } = storeToRefs(useScoresStore());
@@ -29,6 +29,16 @@ const getItemScore = async () => {
   }
 };
 
+const borderClass = computed(() => {
+  if (itemScore.value !== null) {
+    const score = Number(itemScore.value);
+    if (score < 50) return "border-red";
+    if (score > 50) return "border-green";
+    return "border-yellow";
+  }
+  return "border-yellow";
+});
+
 onBeforeMount(async () => {
   await scoresStore.getScores();
   await getId();
@@ -46,7 +56,7 @@ watch(
 
 <template>
   <div v-if="loaded && itemScore !== null">
-    <p>{{ props.type }} Rely-ability: {{ itemScore }}%</p>
+    <p :class="['reliability-score', borderClass]">{{ props.type }} Rely-ability: {{ itemScore }}%</p>
   </div>
   <div v-else-if="loaded">
     <p>N/A</p>
@@ -55,3 +65,25 @@ watch(
     <p>Loading...</p>
   </div>
 </template>
+
+<style scoped>
+.reliability-score {
+  padding: 5px; /* Spacing inside the border */
+  border-radius: 10px; /* Rounded corners */
+  display: inline-block; /* Makes the border fit around the text */
+  color: white; /* White text */
+}
+
+.border-green {
+  border: 3px solid #159d2f; /* Green border */
+  background-color: #159d2f; /* Green background */
+}
+.border-red {
+  border: 3px solid #a5211d; /* Red border */
+  background-color: #a5211d; /* Red background */
+}
+.border-yellow {
+  border: 3px solid #aaa20b; /* Yellow border */
+  background-color: #aaa20b; /* Yellow background */
+}
+</style>

@@ -20,16 +20,31 @@ article {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  padding: 1em;
+}
+
+.subarticle {
+  display: flex;
+  flex-direction: column;
+  gap: 0em;
+  padding-top: 1.5em;
+}
+
+.border-green {
+  border: 3px solid #159d2f; /* Green border */
+}
+.border-red {
+  border: 3px solid #a5211d; /* Red border */
+}
+.border-yellow {
+  border: 3px solid #aaa20b; /* Yellow border */
+}
+
+body {
+  font-family: 'Verdana', sans-serif;
 }
 
 button.btn-small {
   font-size: 80%;
-}
-
-button.button-error {
-  color: white;
-  background: var(--red);
 }
 
 menu {
@@ -100,7 +115,7 @@ menu {
 .reaction {
   list-style-type: none;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5em;
   padding: 0;
   margin: 0;

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import CreatePostForm from "@/components/Post/CreatePostForm.vue";
 import PostComponent from "@/components/Post/PostComponent.vue";
+import { useScoresStore } from "@/stores/scores";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref, watch } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
+const scoresStore = useScoresStore();
 const { isLoggedIn, currentUsername } = storeToRefs(useUserStore());
 const props = defineProps(["profile", "mode"]);
 

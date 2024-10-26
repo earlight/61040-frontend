@@ -70,8 +70,54 @@ watch(
 
 <template>
   <div v-if="loaded && isLoggedIn && currentUsername !== props.username">
-    <button class="btn-small pure-button" @click="toggleFollow">
+    <button :class="['button', following ? 'unfollow-button' : 'follow-button']" @click="toggleFollow">
       {{ following ? "Unfollow" : "Follow" }}
     </button>
   </div>
 </template>
+
+<style scoped>
+.button {
+  border-radius: 20px; /* Rounded corners */
+  padding: 10px 20px; /* Comfortable padding */
+  font-size: 16px; /* Font size */
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    transform 0.3s,
+    filter 0.3s,
+    border-color 0.3s; /* Smooth transition for border color */
+}
+.button:hover {
+  transform: scale(1.05); /* Slight scaling on hover */
+  filter: drop-shadow(0px 0px 5px #888888); /* Add a shadow on hover */
+  transition:
+    filter 0.3s,
+    transform 0.3s,
+    background-color 0.3s,
+    border-color 0.3s; /* Smooth transition for the shadow effect */
+}
+.button:active {
+  transform: scale(0.95); /* Slight scaling on click */
+}
+
+.follow-button {
+  background-color: #ffffff; /* White background */
+  color: black;
+  border: 2px solid;
+}
+
+.follow-button:hover {
+  background-color: #dddddd;
+}
+
+.unfollow-button {
+  background-color: #000000; /* Black background */
+  color: white;
+  border: 2px solid; /* White border (will change dynamically) */
+}
+
+.unfollow-button:hover {
+  background-color: #333333;
+}
+</style>

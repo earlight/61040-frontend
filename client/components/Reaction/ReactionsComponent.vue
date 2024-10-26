@@ -15,6 +15,9 @@ const liked = ref<boolean | null>(null);
 const dislikes = ref<number | null>(null);
 const disliked = ref<boolean | null>(null);
 
+const isLikeHovered = ref(false);
+const isDislikeHovered = ref(false);
+
 const getLikes = async () => {
   try {
     const results = await fetchy(`/api/reactions/item`, "GET", {
@@ -79,6 +82,7 @@ const updateReaction = async (type: "like" | "dislike") => {
   try {
     await fetchy(`/api/reactions`, "PATCH", {
       body: { type, item: props.item._id },
+      alert: false,
     });
   } catch {
     return;
@@ -87,7 +91,9 @@ const updateReaction = async (type: "like" | "dislike") => {
 
 const deleteReaction = async () => {
   try {
-    await fetchy(`/api/reactions/${props.item._id}`, "DELETE");
+    await fetchy(`/api/reactions/${props.item._id}`, "DELETE", {
+      alert: false,
+    });
   } catch {
     return;
   }
@@ -139,18 +145,68 @@ onBeforeMount(async () => {
 
 <template>
   <div v-if="loaded" class="reactions">
-    <div class="reaction">
-      <button v-if="isLoggedIn" class="btn-small pure-button" @click="react('like')">
-        {{ liked ? "Un-like" : "Like" }}
-      </button>
-      <span>{{ likes }} like{{ likes === 1 ? "" : "s" }}</span>
+    <div class="reaction" @mouseover="isLikeHovered = true" @mouseleave="isLikeHovered = false" @click="isLoggedIn ? react('like') : null">
+      <img :src="liked ? '/client/assets/icons/like-fill.png' : isLikeHovered ? '/client/assets/icons/like-hover.png' : '/client/assets/icons/like-empty.png'" alt="Like" class="reaction-icon" />
+      <span :class="{ liked: liked }">{{ likes }}</span>
     </div>
-    <div class="reaction">
-      <button v-if="isLoggedIn" class="btn-small pure-button" @click="react('dislike')">
-        {{ disliked ? "Un-dislike" : "Dislike" }}
-      </button>
-      <span>{{ dislikes }} dislike{{ dislikes === 1 ? "" : "s" }}</span>
+    <div class="reaction" @mouseover="isDislikeHovered = true" @mouseleave="isDislikeHovered = false" @click="isLoggedIn ? react('dislike') : null">
+      <img
+        :src="disliked ? '/client/assets/icons/dislike-fill.png' : isDislikeHovered ? '/client/assets/icons/dislike-hover.png' : '/client/assets/icons/dislike-empty.png'"
+        alt="Dislike"
+        class="reaction-icon"
+      />
+      <span :class="{ disliked: disliked }">{{ dislikes }}</span>
     </div>
   </div>
   <div v-else>Loading...</div>
 </template>
+
+<style scoped>
+/* Change color for like count */
+.liked {
+  color: #159d2f; /* Green color for likes */
+}
+
+/* Change color for dislike count */
+.disliked {
+  color: #a5211d; /* Red color for dislikes */
+}
+
+.reaction {
+  padding: 5px; /* Add some padding for better visual space */
+  border-radius: 4px; /* Optional: round the corners */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition:
+    color 0.3s,
+    filter 0.3s,
+    transform 0.3s; /* Smooth transition for color change */
+}
+
+.reaction:hover {
+  transform: scale(1.1); /* Scale the icon on hover */
+  filter: drop-shadow(0px 0px 5px #888888); /* Add a shadow on hover */
+  transition:
+    color 0.3s,
+    filter 0.3s,
+    transform 0.3s;
+}
+
+.reaction:active {
+  transform: scale(0.95); /* Slight scaling on click */
+}
+
+/* Change color for like count */
+.reaction:first-child:hover {
+  color: #159d2f; /* Green color for likes */
+}
+
+/* Change color for dislike count */
+.reaction:last-child:hover {
+  color: #a5211d; /* Red color for dislikes */
+}
+
+.reaction-icon {
+  width: 20px; /* Adjust the size as needed */
+  height: 20px; /* Adjust the size as needed */
+}
+</style>
