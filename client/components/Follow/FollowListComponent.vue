@@ -11,7 +11,7 @@ async function getFollows() {
   const query: Record<string, string> = { username: props.username };
   let followsResults;
   try {
-    followsResults = await fetchy(`/api/${props.mode}`, "GET", { query });
+    followsResults = await fetchy(`/api/${props.mode}`, "GET", { query, alert: false });
   } catch (_) {
     return;
   }

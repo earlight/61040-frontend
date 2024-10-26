@@ -13,7 +13,7 @@ export const useScoresStore = defineStore(
 
     const getScores = async () => {
       try {
-        const scoreResults = await fetchy("/api/score", "GET");
+        const scoreResults = await fetchy("/api/score", "GET", { alert: false });
         scores.value = scoreResults;
       } catch (_) {
         return;
@@ -22,7 +22,7 @@ export const useScoresStore = defineStore(
 
     const getUserId = async (user: string) => {
       try {
-        const userResult = await fetchy(`/api/users/${user}`, "GET");
+        const userResult = await fetchy(`/api/users/${user}`, "GET", { alert: false });
         return userResult._id;
       } catch (_) {
         return;
@@ -54,9 +54,11 @@ export const useScoresStore = defineStore(
       try {
         likesResults = await fetchy(`/api/reactions/item`, "GET", {
           query: { type: "like", item: item },
+          alert: false,
         });
         dislikesResults = await fetchy(`/api/reactions/item`, "GET", {
           query: { type: "dislike", item: item },
+          alert: false,
         });
       } catch (_) {
         return DEFAULT_SCORE;
@@ -88,7 +90,7 @@ export const useScoresStore = defineStore(
       const query: Record<string, string> = { parent: item };
       let commentsResults;
       try {
-        commentsResults = await fetchy(`/api/comments/parent`, "GET", { query });
+        commentsResults = await fetchy(`/api/comments/parent`, "GET", { query, alert: false });
       } catch (_) {
         return DEFAULT_SCORE;
       }
@@ -113,7 +115,7 @@ export const useScoresStore = defineStore(
     const computeCommentSentiment = async (content: string) => {
       let sentimentScore = DEFAULT_SCORE;
       try {
-        sentimentScore = await fetchy("/api/comments/sentiment", "GET", { query: { content } });
+        sentimentScore = await fetchy("/api/comments/sentiment", "GET", { query: { content }, alert: false });
       } catch (_) {
         return DEFAULT_SCORE;
       }
@@ -149,14 +151,14 @@ export const useScoresStore = defineStore(
       const query: Record<string, string> = { author: user };
       let postResults;
       try {
-        postResults = await fetchy(`/api/posts`, "GET", { query });
+        postResults = await fetchy(`/api/posts`, "GET", { query, alert: false });
       } catch (_) {
         return;
       }
 
       let commentResults;
       try {
-        commentResults = await fetchy(`/api/comments`, "GET", { query });
+        commentResults = await fetchy(`/api/comments`, "GET", { query, alert: false });
       } catch (_) {
         return;
       }
@@ -219,6 +221,7 @@ export const useScoresStore = defineStore(
 
     return {
       scores,
+      getUserId,
       getScores,
       updateScore,
     };

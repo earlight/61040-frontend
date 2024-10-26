@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useScoresStore } from "@/stores/scores";
-import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref, watch } from "vue";
 
@@ -14,12 +13,7 @@ const id = ref<string | null>(null);
 
 const getId = async () => {
   if (props.type === "User") {
-    try {
-      const userResult = await fetchy(`/api/users/${props.item}`, "GET");
-      id.value = userResult._id;
-    } catch (_) {
-      return;
-    }
+    id.value = await scoresStore.getUserId(props.item);
   } else {
     id.value = props.item._id;
   }

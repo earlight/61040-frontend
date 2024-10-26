@@ -13,7 +13,7 @@ async function getFollowers() {
   const query: Record<string, string> = { username: props.user.username };
   let followersResults;
   try {
-    followersResults = await fetchy("/api/followers", "GET", { query });
+    followersResults = await fetchy("/api/followers", "GET", { query, alert: false });
   } catch (_) {
     return;
   }
@@ -24,7 +24,7 @@ async function getFollowing() {
   const query: Record<string, string> = { username: props.user.username };
   let followingResults;
   try {
-    followingResults = await fetchy("/api/following", "GET", { query });
+    followingResults = await fetchy("/api/following", "GET", { query, alert: false });
   } catch (_) {
     return;
   }

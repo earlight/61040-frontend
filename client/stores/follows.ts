@@ -9,7 +9,7 @@ export const useFollowsStore = defineStore(
 
     const getFollows = async () => {
       try {
-        const followResults = await fetchy("/api/follows", "GET");
+        const followResults = await fetchy("/api/follows", "GET", { alert: false });
         follows.value = followResults;
       } catch (_) {
         return;

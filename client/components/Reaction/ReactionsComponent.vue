@@ -19,6 +19,7 @@ const getLikes = async () => {
   try {
     const results = await fetchy(`/api/reactions/item`, "GET", {
       query: { type: "like", item: props.item._id },
+      alert: false,
     });
     likes.value = results.length;
   } catch (_) {
@@ -30,6 +31,7 @@ const getDislikes = async () => {
   try {
     const results = await fetchy(`/api/reactions/item`, "GET", {
       query: { type: "dislike", item: props.item._id },
+      alert: false,
     });
     dislikes.value = results.length;
   } catch (_) {

@@ -18,7 +18,7 @@ async function getCommentsByParent(parent: string) {
   let query: Record<string, string> = { parent };
   let commentResults;
   try {
-    commentResults = await fetchy("/api/comments/parent", "GET", { query });
+    commentResults = await fetchy("/api/comments/parent", "GET", { query, alert: false });
   } catch (_) {
     return;
   }
