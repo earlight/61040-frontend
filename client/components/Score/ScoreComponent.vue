@@ -77,13 +77,22 @@ watch(
 .border-green {
   border: 3px solid #159d2f; /* Green border */
   background-color: #159d2f; /* Green background */
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease; /* Smooth color change */
 }
 .border-red {
   border: 3px solid #a5211d; /* Red border */
   background-color: #a5211d; /* Red background */
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease; /* Smooth color change */
 }
 .border-yellow {
   border: 3px solid #aaa20b; /* Yellow border */
   background-color: #aaa20b; /* Yellow background */
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease; /* Smooth color change */
 }
 </style>

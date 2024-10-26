@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from "@/router";
 import { useScoresStore } from "@/stores/scores";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -72,6 +73,7 @@ const postReaction = async (type: "like" | "dislike") => {
   try {
     await fetchy(`/api/reactions`, "POST", {
       body: { type, item: props.item._id },
+      alert: false,
     });
   } catch {
     return;
@@ -137,6 +139,10 @@ const react = async (type: "like" | "dislike") => {
   await scoresStore.updateScore(props.item._id);
 };
 
+async function viewLogin() {
+  void router.push({ name: "Login" });
+}
+
 onBeforeMount(async () => {
   await getReactions();
   loaded.value = true;
@@ -145,16 +151,16 @@ onBeforeMount(async () => {
 
 <template>
   <div v-if="loaded" class="reactions">
-    <div class="reaction" @mouseover="isLikeHovered = true" @mouseleave="isLikeHovered = false" @click="isLoggedIn ? react('like') : null">
-      <img :src="liked ? '/client/assets/icons/like-fill.png' : isLikeHovered ? '/client/assets/icons/like-hover.png' : '/client/assets/icons/like-empty.png'" alt="Like" class="reaction-icon" />
+    <div class="reaction" @mouseover="isLikeHovered = true" @mouseleave="isLikeHovered = false" @click="isLoggedIn ? react('like') : viewLogin()">
+      <img v-if="liked" src="@/assets/images/like-fill.png" alt="Like" class="reaction-icon" />
+      <img v-else-if="isLikeHovered" src="@/assets/images/like-hover.png" alt="Like" class="reaction-icon" />
+      <img v-else src="@/assets/images/like-empty.png" alt="Like" class="reaction-icon" />
       <span :class="{ liked: liked }">{{ likes }}</span>
     </div>
-    <div class="reaction" @mouseover="isDislikeHovered = true" @mouseleave="isDislikeHovered = false" @click="isLoggedIn ? react('dislike') : null">
-      <img
-        :src="disliked ? '/client/assets/icons/dislike-fill.png' : isDislikeHovered ? '/client/assets/icons/dislike-hover.png' : '/client/assets/icons/dislike-empty.png'"
-        alt="Dislike"
-        class="reaction-icon"
-      />
+    <div class="reaction" @mouseover="isDislikeHovered = true" @mouseleave="isDislikeHovered = false" @click="isLoggedIn ? react('dislike') : viewLogin()">
+      <img v-if="disliked" src="@/assets/images/dislike-fill.png" alt="Dislike" class="reaction-icon" />
+      <img v-else-if="isDislikeHovered" src="@/assets/images/dislike-hover.png" alt="Dislike" class="reaction-icon" />
+      <img v-else src="@/assets/images/dislike-empty.png" alt="Dislike" class="reaction-icon" />
       <span :class="{ disliked: disliked }">{{ dislikes }}</span>
     </div>
   </div>

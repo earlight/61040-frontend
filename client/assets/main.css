@@ -31,12 +31,15 @@ article {
 
 .border-green {
   border: 3px solid #159d2f; /* Green border */
+  transition: border-color 0.3s ease; /* Smooth transition for border color */
 }
 .border-red {
   border: 3px solid #a5211d; /* Red border */
+  transition: border-color 0.3s ease; /* Smooth transition for border color */
 }
 .border-yellow {
   border: 3px solid #aaa20b; /* Yellow border */
+  transition: border-color 0.3s ease; /* Smooth transition for border color */
 }
 
 body {

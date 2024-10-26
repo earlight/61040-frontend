@@ -104,7 +104,7 @@ watch(
       <div class="base">
         <div class="reactions">
           <ReactionsComponent :item="props.post" />
-          <img v-if="props.post._id != currentRoute.params.id" src="/client/assets/icons/comment.png" alt="Comment" class="button icon" @click="viewComments" />
+          <img v-if="props.post._id != currentRoute.params.id" src="/client/assets/images/comment.png" alt="Comment" class="button icon" @click="viewComments" />
         </div>
         <button v-if="props.post.author == currentUsername" class="button button-delete" @click="deletePost">Delete</button>
       </div>
