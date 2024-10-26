@@ -110,7 +110,7 @@ watch(
       </div>
       <div class="base">
         <ScoreComponent :item="props.post" :type="'Post'" />
-        <article class="timestamp">Created on: {{ formatDate(props.post.dateCreated) }}</article>
+        <article class="timestamp">{{ formatDate(props.post.dateCreated) }}</article>
       </div>
     </div>
   </div>
@@ -162,5 +162,8 @@ p {
   height: 25px;
   padding: 0px;
   cursor: pointer;
+}
+.icon:hover {
+  transform: scale(1.2);
 }
 </style>

@@ -35,24 +35,26 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <section>
-    <div v-if="loaded && user">
-      <div class="author-header">
-        <h1>{{ currentRoute.params.username }}</h1>
-        <FollowComponent :username="currentRoute.params.username" />
+  <div class="page-wrapper">
+    <section>
+      <div v-if="loaded && user">
+        <div class="author-header">
+          <h1>{{ currentRoute.params.username }}</h1>
+          <FollowComponent :username="currentRoute.params.username" />
+        </div>
+        <ScoreComponent :item="currentRoute.params.username" :type="'User'" />
+        <div class="button clickable-text" @click="viewBack">{{ "Back to " + currentRoute.params.username + "'s profile" }}</div>
+        <h2>{{ currentRouteName }}</h2>
+        <FollowListComponent :username="currentRoute.params.username" :mode="currentRouteName" />
       </div>
-      <ScoreComponent :item="currentRoute.params.username" :type="'User'" />
-      <div class="button clickable-text" @click="viewBack">{{ "Back to " + currentRoute.params.username + "'s profile" }}</div>
-      <h2>{{ currentRouteName }}</h2>
-      <FollowListComponent :username="currentRoute.params.username" :mode="currentRouteName" />
-    </div>
-    <div v-else-if="loaded && !user">
-      <p>User not found.</p>
-    </div>
-    <div v-else>
-      <p>Loading...</p>
-    </div>
-  </section>
+      <div v-else-if="loaded && !user">
+        <p>User not found.</p>
+      </div>
+      <div v-else>
+        <p>Loading...</p>
+      </div>
+    </section>
+  </div>
 </template>
 
 <style scoped>

@@ -30,12 +30,10 @@ onBeforeMount(async () => {
     <article>
       <PostComponent :post="post" />
     </article>
+    <CommentListComponent :parent="post" />
   </section>
   <p v-else-if="loaded">Post not found.</p>
   <p v-else>Loading...</p>
-  <div v-if="loaded && post">
-    <CommentListComponent :parent="post" />
-  </div>
 </template>
 
 <style scoped>

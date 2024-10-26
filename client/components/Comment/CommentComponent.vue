@@ -92,7 +92,7 @@ watch(
       </div>
       <div class="base">
         <ScoreComponent :item="props.comment" :type="'Comment'" />
-        <article class="timestamp">Created on: {{ formatDate(props.comment.dateCreated) }}</article>
+        <article class="timestamp">{{ formatDate(props.comment.dateCreated) }}</article>
       </div>
     </div>
   </div>
