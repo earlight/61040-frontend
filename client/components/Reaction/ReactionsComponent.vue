@@ -180,6 +180,7 @@ onBeforeMount(async () => {
 
 .reaction {
   padding: 5px; /* Add some padding for better visual space */
+  padding-bottom: 0px; /* Remove bottom padding */
   border-radius: 4px; /* Optional: round the corners */
   cursor: pointer; /* Change cursor to pointer on hover */
   transition:

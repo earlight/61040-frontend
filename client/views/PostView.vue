@@ -33,7 +33,7 @@ onBeforeMount(async () => {
   </section>
   <p v-else-if="loaded">Post not found.</p>
   <p v-else>Loading...</p>
-  <div v-if="loaded && post" style="padding-bottom: 1em">
+  <div v-if="loaded && post">
     <CommentListComponent :parent="post" />
   </div>
 </template>

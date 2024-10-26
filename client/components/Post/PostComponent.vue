@@ -96,15 +96,15 @@ watch(
       {{ goBackLink == "Profile" ? "Back to " + props.post.author + "'s profile" : "Back to Home" }}
     </p>
     <div class="author-header">
-      <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
+      <p class="author button" @click="viewAuthor">{{ props.post.author }}</p>
       <FollowComponent :username="props.post.author" @reloadFollows="emit('reloadFollows')" />
     </div>
-    <p class="content">{{ props.post.content }}</p>
+    <p>{{ props.post.content }}</p>
     <div class="subarticle">
       <div class="base">
         <div class="reactions">
           <ReactionsComponent :item="props.post" />
-          <img v-if="props.post._id != currentRoute.params.id" src="/client/assets/images/comment.png" alt="Comment" class="button icon" @click="viewComments" />
+          <img v-if="props.post._id != currentRoute.params.id" src="@/assets/images/comment.png" alt="Comment" class="button icon" @click="viewComments" />
         </div>
         <button v-if="props.post.author == currentUsername" class="button button-delete" @click="deletePost">Delete</button>
       </div>
@@ -129,28 +129,8 @@ p {
 
 .author-header {
   gap: 1em;
-  padding-top: 1em;
-  padding-bottom: 1.5em;
-}
-
-.button {
-  transition:
-    background-color 0.3s,
-    transform 0.3s,
-    filter 0.3s,
-    border-color 0.3s; /* Smooth transition for border color */
-}
-.button:hover {
-  transform: scale(1.05); /* Slight scaling on hover */
-  filter: drop-shadow(0px 0px 5px #888888); /* Add a shadow on hover */
-  transition:
-    filter 0.3s,
-    transform 0.3s,
-    background-color 0.3s,
-    border-color 0.3s; /* Smooth transition for the shadow effect */
-}
-.button:active {
-  transform: scale(0.95); /* Slight scaling on click */
+  padding-top: 0.5em;
+  padding-bottom: 1em;
 }
 
 .clickable-text {
@@ -167,9 +147,8 @@ p {
   background-color: #ff0000; /* Red */
   color: white; /* White text */
   border: 2px solid; /* Solid border */
-  border-radius: 20px; /* Rounded corners */
+  border-radius: 40px; /* Rounded corners */
   padding: 10px 20px; /* Comfortable padding */
-  font-size: 16px; /* Font size */
 }
 
 .button-delete:hover {

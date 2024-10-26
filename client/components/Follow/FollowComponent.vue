@@ -78,9 +78,8 @@ watch(
 
 <style scoped>
 .button {
-  border-radius: 20px; /* Rounded corners */
+  border-radius: 40px; /* Rounded corners */
   padding: 10px 20px; /* Comfortable padding */
-  font-size: 16px; /* Font size */
   cursor: pointer;
   transition:
     background-color 0.3s,
@@ -90,7 +89,7 @@ watch(
 }
 .button:hover {
   transform: scale(1.05); /* Slight scaling on hover */
-  filter: drop-shadow(0px 0px 5px #888888); /* Add a shadow on hover */
+  filter: drop-shadow(0px 0px 5px #cccccc); /* Add a shadow on hover */
   transition:
     filter 0.3s,
     transform 0.3s,

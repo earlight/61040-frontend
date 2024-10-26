@@ -8,13 +8,13 @@ import CommentComponent from "./CommentComponent.vue";
 import CreateCommentForm from "./CreateCommentForm.vue";
 
 const currentRoute = useRoute();
-const props = defineProps(["parent"]);
+const props = defineProps(["parent", "reply"]);
+const emit = defineEmits(["closeReply"]);
 const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let comments = ref<Array<Record<string, string>>>([]);
 const collapsed = ref(false);
-const reply = ref(false);
 
 async function getCommentsByParent(parent: string, stayCollapsed?: boolean) {
   let query: Record<string, string> = { parent };
@@ -29,15 +29,11 @@ async function getCommentsByParent(parent: string, stayCollapsed?: boolean) {
     return;
   }
   collapsed.value = false;
-  reply.value = false;
+  emit("closeReply");
 }
 
-const toggleComments = () => {
+const toggleComments = async () => {
   collapsed.value = !collapsed.value;
-};
-
-const toggleReply = () => {
-  reply.value = !reply.value;
 };
 
 onBeforeMount(async () => {
@@ -47,17 +43,12 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="toggle-reply" v-if="isLoggedIn && props.parent._id !== currentRoute.params.id">
-    <button @click="toggleReply">Reply to Comment</button>
-  </div>
-  <div class="comments">
-    <section v-if="isLoggedIn && (props.parent._id === currentRoute.params.id || reply)" style="padding-bottom: 1em">
+  <div class="comments" v-if="isLoggedIn && (props.parent._id === currentRoute.params.id || reply)">
+    <section>
       <CreateCommentForm :parent="props.parent" @refreshComments="getCommentsByParent(props.parent._id)" />
     </section>
   </div>
-  <div class="toggle-comments" v-if="props.parent._id !== currentRoute.params.id && comments.length !== 0">
-    <button @click="toggleComments">{{ collapsed ? "Show Comments" : "Hide Comments" }}</button>
-  </div>
+  <button v-if="props.parent._id !== currentRoute.params.id && comments.length !== 0" class="button button-comment" @click="toggleComments">{{ collapsed ? "Show Replies" : "Hide Replies" }}</button>
   <div class="comments" v-if="!collapsed">
     <section v-if="loaded && comments.length !== 0">
       <article v-for="comment in comments" :key="comment._id">
@@ -89,10 +80,25 @@ article {
   flex-direction: column;
   gap: 0.5em;
   padding: 1em;
-  padding-bottom: 0;
+  padding-top: 1em;
+  padding-bottom: 0em;
 }
 
-.toggle-comments {
-  margin: 1em 0;
+.button-comment {
+  background-color: #ffffff; /* White background */
+  color: black;
+  border: 2px solid; /* Solid border */
+  border-radius: 40px; /* Rounded corners */
+  padding: 5px 40px; /* Comfortable padding */
+  margin-bottom: 1em;
+}
+
+.button-comment:hover {
+  transform: scale(1.025); /* Slight scaling on hover */
+  background-color: #dddddd;
+}
+
+.button-comment:active {
+  transform: scale(0.975); /* Slight scaling on click */
 }
 </style>
