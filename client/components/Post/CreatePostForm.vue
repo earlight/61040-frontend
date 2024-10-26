@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import { useScoresStore } from "@/stores/scores";
 import { ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
+const scoresStore = useScoresStore();
 const content = ref("");
 const emit = defineEmits(["refreshPosts"]);
 
 const createPost = async (content: string) => {
+  let result;
   try {
-    await fetchy("/api/posts", "POST", {
+    result = await fetchy("/api/posts", "POST", {
       body: { content },
     });
   } catch (_) {
@@ -15,6 +18,7 @@ const createPost = async (content: string) => {
   }
   emit("refreshPosts");
   emptyForm();
+  await scoresStore.updateScore(result.post._id);
 };
 
 const emptyForm = () => {

@@ -126,8 +126,7 @@ const react = async (type: "like" | "dislike") => {
     await deleteReaction();
   }
   await getReactions();
-  await scoresStore.updateContentScore(props.item._id);
-  await scoresStore.getScores();
+  await scoresStore.updateScore(props.item._id);
 };
 
 onBeforeMount(async () => {

@@ -20,6 +20,20 @@ export const useScoresStore = defineStore(
       }
     };
 
+    const getUserId = async (user: string) => {
+      try {
+        const userResult = await fetchy(`/api/users/${user}`, "GET");
+        return userResult._id;
+      } catch (_) {
+        return;
+      }
+    };
+
+    const getContentScore = async (id: string) => {
+      const output = scores.value.find((score) => score.item === id)?.score ?? null;
+      return output;
+    };
+
     const getContentAuthor = async (id: string) => {
       let result;
       try {
@@ -112,11 +126,8 @@ export const useScoresStore = defineStore(
       return sentimentScore;
     };
 
-    const updateContentScore = async (item: string) => {
-      const author = await getContentAuthor(item);
-
+    const updateContentScore = async (item: string, author: string) => {
       const reactionScore = await computeReactionScore(item, author);
-
       const commentScore = await computeCommentScore(item, author);
 
       let weightedScore = (reactionScore + commentScore) / 2;
@@ -134,10 +145,82 @@ export const useScoresStore = defineStore(
       }
     };
 
+    const computeUserScore = async (user: string) => {
+      const query: Record<string, string> = { author: user };
+      let postResults;
+      try {
+        postResults = await fetchy(`/api/posts`, "GET", { query });
+      } catch (_) {
+        return;
+      }
+
+      let commentResults;
+      try {
+        commentResults = await fetchy(`/api/comments`, "GET", { query });
+      } catch (_) {
+        return;
+      }
+
+      let totalContent = 0;
+      let totalContentScore = 0;
+      for (const post of postResults) {
+        const contentScore = await getContentScore(post._id);
+        if (contentScore !== null) {
+          totalContent++;
+          totalContentScore += Number(contentScore);
+        }
+      }
+      for (const comment of commentResults) {
+        const contentScore = await getContentScore(comment._id);
+        if (contentScore !== null) {
+          totalContent++;
+          totalContentScore += Number(contentScore);
+        }
+      }
+
+      let userScore = DEFAULT_SCORE;
+      if (totalContent !== 0) {
+        userScore = totalContentScore / totalContent;
+      }
+      userScore = Math.max(MIN_SCORE * 100, Math.min(MAX_SCORE * 100, userScore));
+      userScore = Math.round(userScore);
+      return userScore;
+    };
+
+    const updateUserScore = async (user: string, id: string) => {
+      const userScore = await computeUserScore(user);
+      if (userScore === undefined) {
+        return;
+      }
+
+      try {
+        await fetchy(`/api/score`, "PATCH", {
+          body: { item: id, score: userScore.toString() },
+          alert: false,
+        });
+      } catch (_) {
+        return;
+      }
+    };
+
+    const updateScore = async (item: string) => {
+      const author = await getContentAuthor(item);
+      const authorId = await getUserId(author);
+
+      if (author === null || authorId === null) {
+        return;
+      }
+
+      await updateContentScore(item, author);
+      await getScores();
+      await updateUserScore(author, authorId);
+      await getScores();
+    };
+
     return {
       scores,
       getScores,
-      updateContentScore,
+      updateScore,
     };
   },
   { persist: true },

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import FollowComponent from "@/components/Follow/FollowComponent.vue";
 import FollowStatsComponent from "@/components/Follow/FollowStatsComponent.vue";
 import PostListComponent from "@/components/Post/PostListComponent.vue";
+import ScoreComponent from "@/components/Score/ScoreComponent.vue";
 import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -38,7 +40,11 @@ onBeforeUpdate(async () => {
 <template>
   <div v-if="loaded && user">
     <section>
-      <h1>{{ user.username }}'s Profile</h1>
+      <div class="author-header">
+        <h1>{{ user.username }}'s Profile</h1>
+        <FollowComponent :username="user.username" />
+      </div>
+      <ScoreComponent :item="user.username" :type="'User'" />
       <FollowStatsComponent :user="user" />
       <h2>{{ user.username }}'s posts:</h2>
     </section>
@@ -56,7 +62,7 @@ onBeforeUpdate(async () => {
 section {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: 0em;
   padding: 1em;
 }
 

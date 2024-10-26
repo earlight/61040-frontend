@@ -8,7 +8,7 @@ import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
 import FollowComponent from "../Follow/FollowComponent.vue";
 import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
-import ContentScoreComponent from "../Score/ContentScoreComponent.vue";
+import ScoreComponent from "../Score/ScoreComponent.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 
 const scoresStore = useScoresStore();
@@ -24,8 +24,7 @@ const deleteComment = async () => {
     return;
   }
   emit("refreshComments");
-  await scoresStore.updateContentScore(props.comment.parent);
-  await scoresStore.getScores();
+  await scoresStore.updateScore(props.comment.parent);
   if (props.comment._id == currentRoute.params.id) {
     void router.go(0);
   }
@@ -41,14 +40,15 @@ async function viewAuthor() {
 </script>
 
 <template>
-  <menu>
+  <div class="author-header">
     <p class="author" @click="viewAuthor">{{ props.comment.author }}</p>
+    <ScoreComponent :item="props.comment.author" :type="'User'" />
     <FollowComponent :username="props.comment.author" />
-  </menu>
+  </div>
   <p>{{ props.comment.content }}</p>
   <div class="base">
     <ReactionsComponent :item="props.comment" />
-    <ContentScoreComponent :item="props.comment" />
+    <ScoreComponent :item="props.comment" :type="'Comment'" />
   </div>
   <div class="base">
     <menu>
@@ -67,12 +67,7 @@ p {
   margin: 0em;
 }
 
-menu {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
+.author-header {
   gap: 1em;
-  padding: 0;
-  margin: 0;
 }
 </style>

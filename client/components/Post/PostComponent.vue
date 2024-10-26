@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import router from "@/router";
+import { useScoresStore } from "@/stores/scores";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
@@ -7,8 +8,9 @@ import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
 import FollowComponent from "../Follow/FollowComponent.vue";
 import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
-import ContentScoreComponent from "../Score/ContentScoreComponent.vue";
+import ScoreComponent from "../Score/ScoreComponent.vue";
 
+const scoresStore = useScoresStore();
 const currentRoute = useRoute();
 const props = defineProps(["post"]);
 const emit = defineEmits(["refreshPosts"]);
@@ -21,6 +23,7 @@ const deletePost = async () => {
     return;
   }
   emit("refreshPosts");
+  await scoresStore.updateScore(props.post._id);
   if (props.post._id == currentRoute.params.id) {
     void router.go(0);
   }
@@ -36,14 +39,15 @@ async function viewAuthor() {
 </script>
 
 <template>
-  <menu>
+  <div class="author-header">
     <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
+    <ScoreComponent :item="props.post.author" :type="'User'" />
     <FollowComponent :username="props.post.author" />
-  </menu>
+  </div>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <ReactionsComponent :item="props.post" />
-    <ContentScoreComponent :item="props.post" />
+    <ScoreComponent :item="props.post" :type="'Post'" />
   </div>
   <div class="base">
     <menu>
@@ -59,12 +63,7 @@ p {
   margin: 0em;
 }
 
-menu {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
+.author-header {
   gap: 1em;
-  padding: 0;
-  margin: 0;
 }
 </style>

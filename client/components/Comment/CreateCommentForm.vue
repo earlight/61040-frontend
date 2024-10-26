@@ -18,8 +18,7 @@ const createComment = async (content: string) => {
   }
   emit("refreshComments");
   emptyForm();
-  await scoresStore.updateContentScore(props.parent._id);
-  await scoresStore.getScores();
+  await scoresStore.updateScore(props.parent._id);
 };
 
 const emptyForm = () => {
