@@ -25,7 +25,7 @@ onBeforeMount(async () => {
   <header>
     <nav>
       <div class="title">
-        <img src="@/assets/images/rely-logo.png" />
+        <img src="@/assets/images/rely-icon.png" />
         <RouterLink :to="{ name: 'Home' }">
           <h1>Rely</h1>
         </RouterLink>
@@ -62,9 +62,10 @@ onBeforeMount(async () => {
 
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
+  background-color: #f1f3f5;
   display: flex;
   align-items: center;
+  border-bottom: 4px solid #159d2f; /* Add green bottom border */
 }
 
 h1 {
