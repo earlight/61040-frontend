@@ -4,7 +4,6 @@ import { useScoresStore } from "@/stores/scores";
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
-import { useRoute } from "vue-router";
 import { fetchy } from "../../utils/fetchy";
 import FollowComponent from "../Follow/FollowComponent.vue";
 import ReactionsComponent from "../Reaction/ReactionsComponent.vue";
@@ -12,7 +11,6 @@ import ScoreComponent from "../Score/ScoreComponent.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 
 const scoresStore = useScoresStore();
-const currentRoute = useRoute();
 const props = defineProps(["comment"]);
 const emit = defineEmits(["refreshComments"]);
 const { currentUsername } = storeToRefs(useUserStore());
@@ -25,18 +23,7 @@ const deleteComment = async () => {
   }
   emit("refreshComments");
   await scoresStore.updateScore(props.comment.parent);
-  if (props.comment._id == currentRoute.params.id) {
-    void router.go(0);
-  }
 };
-
-async function viewParent() {
-  void router.push({ name: "Comments", params: { id: props.comment.parent } });
-}
-
-async function viewComments() {
-  void router.push({ name: "Comments", params: { id: props.comment._id } });
-}
 
 async function viewAuthor() {
   void router.push({ name: "Profile", params: { username: props.comment.author } });
@@ -44,8 +31,6 @@ async function viewAuthor() {
 </script>
 
 <template>
-  <p v-if="props.comment._id == currentRoute.params.id" class="clickable-text" @click="viewParent">Go Up to Parent Post/Comment</p>
-
   <div class="author-header">
     <p class="author" @click="viewAuthor">{{ props.comment.author }}</p>
     <ScoreComponent :item="props.comment.author" :type="'User'" />
@@ -58,14 +43,11 @@ async function viewAuthor() {
   </div>
   <div class="base">
     <menu>
-      <button v-if="props.comment._id != currentRoute.params.id" class="btn-small pure-button" @click="viewComments">View Comments & Reply</button>
       <button v-if="props.comment.author == currentUsername" class="button-error btn-small pure-button" @click="deleteComment">Delete</button>
     </menu>
     <article class="timestamp">Created on: {{ formatDate(props.comment.dateCreated) }}</article>
   </div>
-  <div class="comments" v-if="props.comment._id != currentRoute.params.id">
-    <CommentListComponent :parent="props.comment" />
-  </div>
+  <CommentListComponent :parent="props.comment" />
 </template>
 
 <style scoped>
@@ -75,5 +57,9 @@ p {
 
 .author-header {
   gap: 1em;
+}
+
+.toggle-reply {
+  margin: 1em 0;
 }
 </style>

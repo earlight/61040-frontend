@@ -34,7 +34,7 @@ async function viewHome() {
 }
 
 async function viewComments() {
-  void router.push({ name: "Comments", params: { id: props.post._id } });
+  void router.push({ name: "Post", params: { id: props.post._id } });
 }
 
 async function viewAuthor() {

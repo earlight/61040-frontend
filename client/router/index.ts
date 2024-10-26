@@ -2,11 +2,11 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
-import CommentsView from "../views/CommentsView.vue";
 import FollowsView from "../views/FollowsView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import PostView from "../views/PostView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import SettingView from "../views/SettingView.vue";
 
@@ -37,9 +37,9 @@ const router = createRouter({
       },
     },
     {
-      path: "/comments/:id",
-      name: "Comments",
-      component: CommentsView,
+      path: "/post/:id",
+      name: "Post",
+      component: PostView,
     },
     {
       path: "/profile/:username",

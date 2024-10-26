@@ -13,8 +13,10 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
 let comments = ref<Array<Record<string, string>>>([]);
+const collapsed = ref(false);
+const reply = ref(false);
 
-async function getCommentsByParent(parent: string) {
+async function getCommentsByParent(parent: string, stayCollapsed?: boolean) {
   let query: Record<string, string> = { parent };
   let commentResults;
   try {
@@ -23,7 +25,20 @@ async function getCommentsByParent(parent: string) {
     return;
   }
   comments.value = commentResults;
+  if (stayCollapsed) {
+    return;
+  }
+  collapsed.value = false;
+  reply.value = false;
 }
+
+const toggleComments = () => {
+  collapsed.value = !collapsed.value;
+};
+
+const toggleReply = () => {
+  reply.value = !reply.value;
+};
 
 onBeforeMount(async () => {
   await getCommentsByParent(props.parent._id);
@@ -32,16 +47,26 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <section v-if="isLoggedIn && props.parent._id == currentRoute.params.id" style="padding-bottom: 1em">
-    <CreateCommentForm :parent="props.parent" @refreshComments="getCommentsByParent(props.parent._id)" />
-  </section>
-  <section class="comments" v-if="loaded && comments.length !== 0">
-    <article v-for="comment in comments" :key="comment._id">
-      <CommentComponent :comment="comment" @refreshComments="getCommentsByParent(props.parent._id)" />
-    </article>
-  </section>
-  <p v-else-if="loaded && props.parent._id == currentRoute.params.id">No comments yet.</p>
-  <p v-else-if="!loaded">Loading...</p>
+  <div class="toggle-reply" v-if="isLoggedIn && props.parent._id !== currentRoute.params.id">
+    <button @click="toggleReply">Reply to Comment</button>
+  </div>
+  <div class="comments">
+    <section v-if="isLoggedIn && (props.parent._id === currentRoute.params.id || reply)" style="padding-bottom: 1em">
+      <CreateCommentForm :parent="props.parent" @refreshComments="getCommentsByParent(props.parent._id)" />
+    </section>
+  </div>
+  <div class="toggle-comments" v-if="props.parent._id !== currentRoute.params.id && comments.length !== 0">
+    <button @click="toggleComments">{{ collapsed ? "Show Comments" : "Hide Comments" }}</button>
+  </div>
+  <div class="comments" v-if="!collapsed">
+    <section v-if="loaded && comments.length !== 0">
+      <article v-for="comment in comments" :key="comment._id">
+        <CommentComponent :comment="comment" @refreshComments="getCommentsByParent(props.parent._id, true)" />
+      </article>
+    </section>
+    <p v-else-if="loaded && props.parent._id === currentRoute.params.id">No comments yet.</p>
+    <p v-else-if="!loaded">Loading...</p>
+  </div>
 </template>
 
 <style scoped>
@@ -65,5 +90,9 @@ article {
   gap: 0.5em;
   padding: 1em;
   padding-bottom: 0;
+}
+
+.toggle-comments {
+  margin: 1em 0;
 }
 </style>
