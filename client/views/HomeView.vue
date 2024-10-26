@@ -2,10 +2,8 @@
 import PostListComponent from "@/components/Post/PostListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
 
-const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
-const followSwitch = ref(false);
+const { currentUsername, isLoggedIn, followSwitch } = storeToRefs(useUserStore());
 </script>
 
 <template>
@@ -16,8 +14,8 @@ const followSwitch = ref(false);
       <h1 v-else>Please login!</h1>
     </section>
     <div style="text-align: center; margin: 1em 0">
-      <button :class="{ active: !followSwitch }" @click="followSwitch = false">All</button>
-      <button :class="{ active: followSwitch }" @click="followSwitch = true">Following</button>
+      <button v-if="isLoggedIn" :class="{ active: !followSwitch }" @click="followSwitch = false">All</button>
+      <button v-if="isLoggedIn" :class="{ active: followSwitch }" @click="followSwitch = true">Following</button>
     </div>
     <PostListComponent :mode="followSwitch ? 'following' : 'all'" />
   </main>

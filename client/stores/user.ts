@@ -10,8 +10,11 @@ export const useUserStore = defineStore(
 
     const isLoggedIn = computed(() => currentUsername.value !== "");
 
+    const followSwitch = ref(false);
+
     const resetStore = () => {
       currentUsername.value = "";
+      followSwitch.value = false;
     };
 
     const createUser = async (username: string, password: string) => {
@@ -56,6 +59,7 @@ export const useUserStore = defineStore(
     return {
       currentUsername,
       isLoggedIn,
+      followSwitch,
       createUser,
       loginUser,
       updateSession,
