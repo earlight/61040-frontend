@@ -67,6 +67,11 @@ menu {
   text-decoration: underline;
 }
 
+.clickable-text {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .column {
   display: flex;
   flex-direction: column;

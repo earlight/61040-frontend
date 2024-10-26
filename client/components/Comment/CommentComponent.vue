@@ -30,6 +30,10 @@ const deleteComment = async () => {
   }
 };
 
+async function viewParent() {
+  void router.push({ name: "Comments", params: { id: props.comment.parent } });
+}
+
 async function viewComments() {
   void router.push({ name: "Comments", params: { id: props.comment._id } });
 }
@@ -40,6 +44,8 @@ async function viewAuthor() {
 </script>
 
 <template>
+  <p v-if="props.comment._id == currentRoute.params.id" class="clickable-text" @click="viewParent">Go Up to Parent Post/Comment</p>
+
   <div class="author-header">
     <p class="author" @click="viewAuthor">{{ props.comment.author }}</p>
     <ScoreComponent :item="props.comment.author" :type="'User'" />

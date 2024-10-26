@@ -29,6 +29,10 @@ const deletePost = async () => {
   }
 };
 
+async function viewHome() {
+  void router.push({ name: "Home" });
+}
+
 async function viewComments() {
   void router.push({ name: "Comments", params: { id: props.post._id } });
 }
@@ -39,6 +43,8 @@ async function viewAuthor() {
 </script>
 
 <template>
+  <p v-if="props.post._id == currentRoute.params.id" class="clickable-text" @click="viewHome">Go to Home</p>
+
   <div class="author-header">
     <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
     <ScoreComponent :item="props.post.author" :type="'User'" />
