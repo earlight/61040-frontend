@@ -28,6 +28,7 @@ const follow = async () => {
   try {
     await fetchy(`/api/follow`, "POST", {
       body: { username: props.username },
+      alert: false,
     });
   } catch (_) {
     return;
@@ -36,7 +37,7 @@ const follow = async () => {
 
 const unfollow = async () => {
   try {
-    await fetchy(`/api/follow/${props.username}`, "DELETE");
+    await fetchy(`/api/follow/${props.username}`, "DELETE", { alert: false });
   } catch (_) {
     return;
   }

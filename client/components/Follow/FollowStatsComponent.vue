@@ -17,7 +17,10 @@ async function getFollowers() {
   } catch (_) {
     return;
   }
-  followers.value = followersResults;
+
+  followers.value = followersResults.filter((follow: { follower: any }) => {
+    return follow.follower !== "DELETED_USER";
+  });
 }
 
 async function getFollowing() {
@@ -28,7 +31,10 @@ async function getFollowing() {
   } catch (_) {
     return;
   }
-  following.value = followingResults;
+
+  following.value = followingResults.filter((follow: { followee: any }) => {
+    return follow.followee !== "DELETED_USER";
+  });
 }
 
 async function viewFollowers() {
@@ -48,11 +54,13 @@ onBeforeMount(async () => {
 
 <template>
   <div class="followers" v-if="loaded">
-    <p class="clickable" @click="viewFollowers">Followers: {{ followers.length }}</p>
-    <p class="clickable" @click="viewFollowing">Following: {{ following.length }}</p>
+    <p class="clickable button" @click="viewFollowers">Followers: {{ followers.length }}</p>
+    <p class="clickable button" @click="viewFollowing">Following: {{ following.length }}</p>
   </div>
   <div class="followers" v-else>
     <p>Loading...</p>
     <p></p>
   </div>
 </template>
+
+<style scoped></style>

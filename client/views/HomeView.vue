@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import PostListComponent from "@/components/Post/PostListComponent.vue";
+import router from "@/router";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
 const { currentUsername, isLoggedIn, followSwitch } = storeToRefs(useUserStore());
+
+async function viewTitle() {
+  if (isLoggedIn.value) {
+    void router.push({ name: "Profile", params: { username: currentUsername.value } });
+  } else {
+    void router.push({ name: "Login" });
+  }
+}
 </script>
 
 <template>
   <main>
-    <h1>Home Page</h1>
     <section>
-      <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
-      <h1 v-else>Please login!</h1>
+      <h1>
+        <span class="button" @click="viewTitle">{{ isLoggedIn ? `Welcome ${currentUsername}!` : "Please login!" }}</span>
+      </h1>
     </section>
     <PostListComponent :mode="followSwitch ? 'following' : 'all'" />
   </main>
@@ -20,5 +29,12 @@ const { currentUsername, isLoggedIn, followSwitch } = storeToRefs(useUserStore()
 <style scoped>
 h1 {
   text-align: center;
+}
+
+.button {
+  display: inline-block;
+}
+.button:hover {
+  text-decoration: underline;
 }
 </style>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from "@/router";
 import { fetchy } from "@/utils/fetchy";
 import { onBeforeMount, ref } from "vue";
 
@@ -15,7 +16,15 @@ async function getFollows() {
   } catch (_) {
     return;
   }
-  follows.value = followsResults;
+
+  follows.value = followsResults.filter((follow: { follower: any; followee: any }) => {
+    const userToCheck = props.mode === "Followers" ? follow.follower : follow.followee;
+    return userToCheck !== "DELETED_USER";
+  });
+}
+
+async function viewUser(username: string) {
+  void router.push({ name: "Profile", params: { username } });
 }
 
 onBeforeMount(async () => {
@@ -27,7 +36,9 @@ onBeforeMount(async () => {
 <template>
   <div v-if="loaded && follows.length !== 0">
     <div v-for="follow in follows" :key="follow._id">
-      <li>{{ props.mode === "Followers" ? follow.follower : follow.followee }}</li>
+      <span class="follow-item clickable-text button" @click="viewUser(props.mode === 'Followers' ? follow.follower : follow.followee)">{{
+        props.mode === "Followers" ? follow.follower : follow.followee
+      }}</span>
     </div>
   </div>
   <div v-else-if="loaded">
@@ -36,3 +47,14 @@ onBeforeMount(async () => {
   </div>
   <div v-else>Loading...</div>
 </template>
+
+<style scoped>
+li {
+  list-style-type: none;
+}
+
+.follow-item {
+  display: inline-block;
+  margin-bottom: 0.5em;
+}
+</style>

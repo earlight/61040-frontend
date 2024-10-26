@@ -41,7 +41,7 @@ onBeforeUpdate(async () => {
   <div v-if="loaded && user">
     <section>
       <div class="author-header">
-        <h1>{{ user.username }}'s Profile</h1>
+        <h1>{{ user.username }}</h1>
         <FollowComponent :username="user.username" />
       </div>
       <ScoreComponent :item="user.username" :type="'User'" />
@@ -62,8 +62,6 @@ onBeforeUpdate(async () => {
 section {
   display: flex;
   flex-direction: column;
-  gap: 0em;
-  padding: 1em;
 }
 
 section,
@@ -71,5 +69,11 @@ p,
 .row {
   margin: 0 auto;
   max-width: 60em;
+}
+
+.author-header {
+  display: flex; /* Set to flex for row layout */
+  align-items: center; /* Align items vertically */
+  gap: 1em; /* Optional: Add space between profile header and follow component */
 }
 </style>

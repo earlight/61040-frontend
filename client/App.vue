@@ -32,18 +32,21 @@ onBeforeMount(async () => {
       </div>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink :to="{ name: 'Home' }" :class="['menu-option', { bold: currentRouteName == 'Home' }]"> Home </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Profile', params: { username: currentUsername } }" :class="{ underline: currentRouteName == 'Profile' && currentRoute.params.username == currentUsername }">
+          <RouterLink
+            :to="{ name: 'Profile', params: { username: currentUsername } }"
+            :class="['menu-option', { bold: currentRouteName == 'Profile' && currentRoute.params.username == currentUsername }]"
+          >
             {{ currentUsername }}'s Profile
           </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <RouterLink :to="{ name: 'Settings' }" :class="['menu-option', { bold: currentRouteName == 'Settings' }]"> Settings </RouterLink>
         </li>
         <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
+          <RouterLink :to="{ name: 'Login' }" :class="['menu-option', { bold: currentRouteName == 'Login' }]"> Login </RouterLink>
         </li>
       </ul>
     </nav>
@@ -67,6 +70,10 @@ nav {
 h1 {
   font-size: 2em;
   margin: 0;
+}
+
+.bold {
+  font-weight: bold; /* Make the font bold */
 }
 
 .title {
@@ -96,5 +103,24 @@ ul {
 
 .underline {
   text-decoration: underline;
+}
+
+.menu-option {
+  display: inline-block;
+  cursor: pointer;
+  transition:
+    transform 0.3s,
+    filter 0.3s;
+}
+.menu-option:hover {
+  text-decoration: underline;
+  transform: scale(1.05); /* Slight scaling on hover */
+  filter: drop-shadow(0px 0px 5px #cccccc); /* Add a shadow on hover */
+  transition:
+    filter 0.3s,
+    transform 0.3s;
+}
+.menu-option:active {
+  transform: scale(0.95); /* Slight scaling on click */
 }
 </style>
