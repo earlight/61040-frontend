@@ -13,7 +13,7 @@ import ScoreComponent from "../Score/ScoreComponent.vue";
 const scoresStore = useScoresStore();
 const currentRoute = useRoute();
 const props = defineProps(["post"]);
-const emit = defineEmits(["refreshPosts"]);
+const emit = defineEmits(["refreshPosts", "reloadFollows"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const deletePost = async () => {
@@ -42,7 +42,7 @@ async function viewAuthor() {
   <div class="author-header">
     <p class="author" @click="viewAuthor">{{ props.post.author }}</p>
     <ScoreComponent :item="props.post.author" :type="'User'" />
-    <FollowComponent :username="props.post.author" />
+    <FollowComponent :username="props.post.author" @reloadFollows="emit('reloadFollows')" />
   </div>
   <p>{{ props.post.content }}</p>
   <div class="base">

@@ -48,7 +48,7 @@ onBeforeUpdate(async () => {
       <FollowStatsComponent :user="user" />
       <h2>{{ user.username }}'s posts:</h2>
     </section>
-    <PostListComponent :profile="user.username" />
+    <PostListComponent :profile="user.username" :mode="'all'" />
   </div>
   <div v-else-if="loaded && !user">
     <p>User not found.</p>

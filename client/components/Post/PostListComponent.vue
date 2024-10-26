@@ -4,15 +4,25 @@ import PostComponent from "@/components/Post/PostComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
-const props = defineProps(["profile"]);
+const { isLoggedIn, currentUsername } = storeToRefs(useUserStore());
+const props = defineProps(["profile", "mode"]);
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
 let searchAuthor = ref("");
+
+async function getFollows() {
+  const query: Record<string, string> = { username: currentUsername.value };
+  try {
+    const followsResults = await fetchy(`/api/following`, "GET", { query, alert: false });
+    return followsResults;
+  } catch (_) {
+    return;
+  }
+}
 
 async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
@@ -23,13 +33,35 @@ async function getPosts(author?: string) {
     return;
   }
   searchAuthor.value = author ? author : "";
+  if (props.mode === "following" && isLoggedIn.value) {
+    const follows = await getFollows();
+    if (follows) {
+      const followingPosts = postResults.filter((post: Record<string, string>) => {
+        return follows.some((follow: Record<string, string>) => follow.followee === post.author);
+      });
+      postResults = followingPosts;
+    }
+  }
   posts.value = postResults;
+}
+
+async function reload() {
+  await getPosts(props.profile ? props.profile : undefined);
 }
 
 onBeforeMount(async () => {
   await getPosts(props.profile ? props.profile : undefined);
   loaded.value = true;
 });
+
+watch(
+  () => props.mode,
+  async () => {
+    loaded.value = false;
+    await reload();
+    loaded.value = true;
+  },
+);
 </script>
 
 <template>
@@ -44,10 +76,13 @@ onBeforeMount(async () => {
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <PostComponent :post="post" @refreshPosts="getPosts(props.profile ? props.profile : undefined)" />
+      <PostComponent :post="post" @refreshPosts="getPosts(props.profile ? props.profile : undefined)" @reloadFollows="reload" />
     </article>
   </section>
-  <p v-else-if="loaded">No posts found</p>
+  <div v-else-if="loaded">
+    <p v-if="props.mode === 'following'">No posts from users you follow.</p>
+    <p v-else>No posts found.</p>
+  </div>
   <p v-else>Loading...</p>
 </template>
 

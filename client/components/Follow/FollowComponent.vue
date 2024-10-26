@@ -9,6 +9,7 @@ const followsStore = useFollowsStore();
 const { follows } = storeToRefs(useFollowsStore());
 const { isLoggedIn, currentUsername } = storeToRefs(useUserStore());
 const props = defineProps(["username"]);
+const emit = defineEmits(["reloadFollows"]);
 
 const loaded = ref(false);
 const following = ref<boolean | null>(null);
@@ -50,6 +51,7 @@ const toggleFollow = async () => {
     await follow();
   }
   await followsStore.getFollows();
+  emit("reloadFollows");
 };
 
 onBeforeMount(async () => {
