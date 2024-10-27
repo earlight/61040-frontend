@@ -43,7 +43,7 @@ onBeforeMount(async () => {
           <FollowComponent :username="currentRoute.params.username" />
         </div>
         <ScoreComponent :item="currentRoute.params.username" :type="'User'" />
-        <div class="button clickable-text" @click="viewBack">{{ "Back to " + currentRoute.params.username + "'s profile" }}</div>
+        <span class="button clickable-text" @click="viewBack">{{ "Back to " + currentRoute.params.username + "'s profile" }}</span>
         <h2>{{ currentRouteName }}</h2>
         <FollowListComponent :username="currentRoute.params.username" :mode="currentRouteName" />
       </div>
